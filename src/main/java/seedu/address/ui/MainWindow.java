@@ -2,8 +2,6 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
-import com.google.common.eventbus.Subscribe;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -55,12 +53,10 @@ public class MainWindow extends UiPart<Region> {
     private final Logger logger = LogsCenter.getLogger(MainWindow.class);
     public static final String ERROR_STYLE_CLASS = "error";
 
-    //ResultDisplay
+    // ResultDisplay
     private final StringProperty displayed = new SimpleStringProperty("");
 
-    // Independent Ui parts residing in this Ui container
     private Config config;
-
 
     @FXML
     private TextField commandTextField;
@@ -69,19 +65,22 @@ public class MainWindow extends UiPart<Region> {
     private TextArea resultDisplay;
 
     @FXML
-    private ListView<ReadOnlyTask> personListView1; // Today
-    
+    private ListView<ReadOnlyTask> personListView1; // All task List
+
     @FXML
-    private ListView<ReadOnlyTask> personListView2; // Pending
-    
+    private ListView<ReadOnlyTask> personListView2; // Today task List
+
     @FXML
-    private ListView<ReadOnlyTask> personListView3; // Task
-    
+    private ListView<ReadOnlyTask> personListView3; // Pending task List
+
+	@FXML
+    private ListView<ReadOnlyTask> personListView4; // Done task List
+
     @FXML
-    private ListView<ReadOnlyTask> personListView4; // Floating
-    
+    private ListView<ReadOnlyTask> personListView5; // Floating task List
+
     @FXML
-    private ListView<ReadOnlyTask> personListView5; // Overdue
+    private ListView<ReadOnlyTask> personListView6; // Overdue task List
 
     @FXML
     private WebView browser;
@@ -104,9 +103,9 @@ public class MainWindow extends UiPart<Region> {
         setWindowDefaultSize(prefs);
         Scene scene = new Scene(getRoot());
         primaryStage.setScene(scene);
-        
+
         setAccelerators();
-        
+
         browser.setOnKeyPressed(Event::consume); // To prevent triggering events for typing inside the
         // loaded Web page.
 
@@ -213,11 +212,7 @@ public class MainWindow extends UiPart<Region> {
         raise(new ExitAppRequestEvent());
     }
 
-    //public PersonListPanel getPersonListPanel() {
-        //return this.personListPanel;
-    //}
-
-    //***********BROWSER******************
+    // ******BrowserPanel*****
     public void loadPersonPage(ReadOnlyTask person) {
         loadPage("https://www.google.com.sg/#safe=off&q=" + person.getName().value.replaceAll(" ", "+"));
     }
@@ -233,7 +228,7 @@ public class MainWindow extends UiPart<Region> {
         browser = null;
     }
 
-  //***********CommandBox******************
+    // ******CommandBox*****
     @FXML
     private void handleCommandInputChanged() {
         try {
@@ -268,14 +263,13 @@ public class MainWindow extends UiPart<Region> {
     }
 
 
-  //***********ResultDisplay******************
-    @Subscribe
+    // ******ResultDisplay*****
     private void handleNewResultAvailableEvent(NewResultAvailableEvent event) {
         logger.info(LogsCenter.getEventHandlingLogMessage(event));
         displayed.setValue(event.message);
     }
 
-  //***********PersonListPanel******************
+    // ******PersonListPanel*****
     private void setConnections(ObservableList<ReadOnlyTask> personList) {
         personListView1.setItems(personList);
         personListView1.setCellFactory(listView -> new PersonListViewCell());
