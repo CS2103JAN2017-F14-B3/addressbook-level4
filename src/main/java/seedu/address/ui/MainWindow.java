@@ -2,6 +2,8 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import com.google.common.eventbus.Subscribe;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -212,7 +214,7 @@ public class MainWindow extends UiPart<Region> {
         raise(new ExitAppRequestEvent());
     }
 
-    // ******BrowserPanel*****
+    // *****BrowserPanel*****
     public void loadPersonPage(ReadOnlyTask person) {
         loadPage("https://www.google.com.sg/#safe=off&q=" + person.getName().value.replaceAll(" ", "+"));
     }
@@ -228,7 +230,7 @@ public class MainWindow extends UiPart<Region> {
         browser = null;
     }
 
-    // ******CommandBox*****
+    // *****CommandBox*****
     @FXML
     private void handleCommandInputChanged() {
         try {
@@ -262,14 +264,14 @@ public class MainWindow extends UiPart<Region> {
         commandTextField.getStyleClass().add(ERROR_STYLE_CLASS);
     }
 
-
-    // ******ResultDisplay*****
+    // *****ResultDisplay*****
+    @Subscribe
     private void handleNewResultAvailableEvent(NewResultAvailableEvent event) {
         logger.info(LogsCenter.getEventHandlingLogMessage(event));
         displayed.setValue(event.message);
     }
 
-    // ******PersonListPanel*****
+    // *****PersonListPanel*****
     private void setConnections(ObservableList<ReadOnlyTask> personList) {
         personListView1.setItems(personList);
         personListView1.setCellFactory(listView -> new PersonListViewCell());
