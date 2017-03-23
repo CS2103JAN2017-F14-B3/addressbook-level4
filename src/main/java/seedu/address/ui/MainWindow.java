@@ -75,7 +75,7 @@ public class MainWindow extends UiPart<Region> {
     @FXML
     private ListView<ReadOnlyTask> personListView3; // Pending task List
 
-	@FXML
+    @FXML
     private ListView<ReadOnlyTask> personListView4; // Done task List
 
     @FXML
