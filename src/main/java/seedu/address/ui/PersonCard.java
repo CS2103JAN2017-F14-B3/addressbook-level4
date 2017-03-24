@@ -12,50 +12,67 @@ import seedu.address.model.task.StartEndDateTime;
 // TODO card design
 public class PersonCard extends UiPart<Region> {
 
-    private static final String FXML = "PersonListCard.fxml";
+    private static final String FXML = "Card.fxml";
 
     @FXML
     private HBox cardPane;
     @FXML
-    private Label name;
+    private HBox startend_only;
+    @FXML
+    private HBox deadline_only;
+    @FXML
+    private HBox startend_deadline;
+    @FXML
+    private Label event;
     @FXML
     private Label id;
     @FXML
-    private Label phone;
+    private Label startdate1;
     @FXML
-    private Label address;
+    private Label startdate2;
     @FXML
-    private Label email;
+    private Label enddate1;
+    @FXML
+    private Label enddate2;
+    @FXML
+    private Label deadline1;
+    @FXML
+    private Label deadline2;
     @FXML
     private FlowPane tags;
 
     public PersonCard(ReadOnlyTask person, int displayedIndex) {
         super(FXML);
-        name.setText(person.getName().value);
+        event.setText(person.getName().value);
         id.setText(displayedIndex + ". ");
-        phone.setText("No deadline!"); // TODO
-        initDeadline(person);
-        address.setText(""); // TODO
-        email.setText(""); // TODO
 
-        // TODO make sure both address and email are available though
-        // and also SLAP
-        if (person.getStartEndDateTime().isPresent()) {
+        if (person.getStartEndDateTime().isPresent() && person.getDeadline().isPresent()) {
+            startend_deadline.setVisible(true);
+            startend_only.setVisible(false);
+            deadline_only.setVisible(false);
             StartEndDateTime startEndDateTime = person.getStartEndDateTime().get();
-            address.setText("Start Date: "
-                    + startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
-            email.setText("End Date: "
-                    + startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+            startdate2.setText(startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+            enddate2.setText(startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+            deadline2.setText(person.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+        } else if (person.getStartEndDateTime().isPresent()) {
+            startend_only.setVisible(true);
+            startend_deadline.setVisible(false);
+            deadline_only.setVisible(false);
+            StartEndDateTime startEndDateTime = person.getStartEndDateTime().get();
+            startdate1.setText(startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+            enddate1.setText(startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+        } else if (person.getDeadline().isPresent()) {
+            deadline_only.setVisible(true);
+            startend_only.setVisible(false);
+            startend_deadline.setVisible(false);
+            deadline1.setText(person.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+        } else {
+            startend_only.setVisible(false);
+            startend_only.setVisible(false);
+            deadline_only.setVisible(false);
+            startend_deadline.setVisible(false);
         }
-
         initTags(person);
-    }
-
-    private void initDeadline(ReadOnlyTask person) {
-        assert person.getDeadline() != null;
-        if (person.getDeadline().isPresent()) {
-            phone.setText("Deadline: " + person.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
-        }
     }
 
     private void initTags(ReadOnlyTask person) {
