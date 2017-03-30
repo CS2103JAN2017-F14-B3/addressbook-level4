@@ -10,18 +10,13 @@ import seedu.address.commons.util.FxViewUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.commands.ViewCommand;
 
+//@@author A0135998H
 /**
  * The Browser Panel of the App.
  */
 public class TaskTabPanel extends UiPart<Region> {
 
     private static final String FXML = "TaskTabPanel.fxml";
-    public static final String ALL_TASKS_TAB = "all";
-    public static final String DONE_TASKS_TAB = "done";
-    public static final String FLOATING_TASKS_TAB = "floating";
-    public static final String OVERDUE_TASKS_TAB = "overdue";
-    public static final String PENDING_TASKS_TAB = "pending";
-    public static final String TODAY_TASKS_TAB = "today";
 
     private Logic logic;
 
