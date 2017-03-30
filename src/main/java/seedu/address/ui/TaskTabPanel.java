@@ -10,6 +10,7 @@ import seedu.address.commons.util.FxViewUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.commands.ViewCommand;
 
+//@@author A0135998H
 /**
  * The Browser Panel of the App.
  */

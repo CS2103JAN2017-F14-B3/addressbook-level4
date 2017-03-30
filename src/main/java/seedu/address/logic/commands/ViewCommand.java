@@ -26,8 +26,7 @@ public class ViewCommand extends Command {
             + "Parameters: TYPE\n"
             + "Example: " + COMMAND_WORD + TYPE_DONE;
 
-
-    public static final String MESSAGE_SUCCESS = "Viewed all tasks";
+    public static final String MESSAGE_SUCCESS = "Listed all tasks";
 
     private final String listType;
 
@@ -52,3 +51,4 @@ public class ViewCommand extends Command {
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }
+
