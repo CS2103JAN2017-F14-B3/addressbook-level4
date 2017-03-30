@@ -13,6 +13,6 @@ public class ViewListChangedEvent extends BaseEvent {
 
     @Override
     public String toString() {
-        return listView + "tasks listed event";
+        return listView + " tasks listed event";
     }
 }
