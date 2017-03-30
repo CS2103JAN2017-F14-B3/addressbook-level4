@@ -25,6 +25,6 @@ public class SampleDataTest extends TaskListGuiTest {
     @Test
     public void taskList_dataFileDoesNotExist_loadSampleData() throws Exception {
         Task[] expectedList = SampleDataUtil.getSampleTasks();
-        assertTrue(personListPanel.isListMatching(expectedList)); // TODO Ui to change
+        assertTrue(taskListPanel.isListMatching(expectedList)); // TODO Ui to change
     }
 }

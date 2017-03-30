@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.Test;
 
-import guitests.guihandles.PersonCardHandle;
+import guitests.guihandles.TaskCardHandle;
 import seedu.address.commons.core.Messages;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.model.tag.Tag;
@@ -20,7 +20,7 @@ import seedu.address.testutil.TestTask;
 // TODO: reduce GUI tests by transferring some tests to be covered by lower level tests.
 public class EditCommandTest extends TaskListGuiTest {
 
-    // The list of tasks in the person list panel(NOTE TO CHANGE) is expected to match this list.
+    // The list of tasks in the task list panel(NOTE TO CHANGE) is expected to match this list.
     // This list is updated with every successful call to assertEditSuccess().
     TestTask[] expectedTasksList = td.getTypicalTasks();
 
@@ -56,7 +56,7 @@ public class EditCommandTest extends TaskListGuiTest {
     @Test
     public void edit_notAllFieldsSpecifiedWithTagsOnly_success() throws Exception {
         // TODO notice how tags have to be in alphabetical order because of the way tags are added
-        // and compared. See TestUtil::compareCardAndPerson using list compare instead of set compare
+        // and compared. See TestUtil::compareCardAndTask using list compare instead of set compare
         String detailsToEdit = "t/fail t/lose";
         int taskListIndex = 2;
 
@@ -148,12 +148,12 @@ public class EditCommandTest extends TaskListGuiTest {
         commandBox.runCommand("edit " + filteredTaskListIndex + " " + detailsToEdit);
 
         // confirm the new card contains the right data
-        PersonCardHandle editedCard = personListPanel.navigateToPerson(editedTask.getName().value);
+        TaskCardHandle editedCard = taskListPanel.navigateToTask(editedTask.getName().value);
         assertMatching(editedTask, editedCard);
 
         // confirm the list now contains all previous tasks plus the task with updated details
         expectedTasksList[taskListIndex - 1] = editedTask;
-        assertTrue(personListPanel.isListMatching(expectedTasksList));
+        assertTrue(taskListPanel.isListMatching(expectedTasksList));
         assertResultMessage(String.format(EditCommand.MESSAGE_EDIT_TASK_SUCCESS, editedTask));
     }
 }
