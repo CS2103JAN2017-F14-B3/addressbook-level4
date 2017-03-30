@@ -1,6 +1,8 @@
 package seedu.address.model;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import javafx.collections.transformation.FilteredList;
@@ -8,9 +10,13 @@ import seedu.address.commons.core.ComponentManager;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.UnmodifiableObservableList;
 import seedu.address.commons.events.model.TaskListChangedEvent;
+import seedu.address.commons.events.model.ViewListChangedEvent;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.StringUtil;
+import seedu.address.logic.commands.ViewCommand;
+import seedu.address.model.task.Deadline;
 import seedu.address.model.task.ReadOnlyTask;
+import seedu.address.model.task.StartEndDateTime;
 import seedu.address.model.task.Task;
 import seedu.address.model.task.UniqueTaskList;
 import seedu.address.model.task.UniqueTaskList.TaskNotFoundException;
@@ -58,6 +64,12 @@ public class ModelManager extends ComponentManager implements Model {
         raise(new TaskListChangedEvent(taskList));
     }
 
+    //@@author A0135998H
+    /** Raises an event to indicate the filteredList has changed */
+    private void indicateViewListChanged(String typeOfListView) {
+        raise(new ViewListChangedEvent(typeOfListView));
+    }
+
     @Override
     public synchronized void deleteTask(ReadOnlyTask target) throws TaskNotFoundException {
         taskList.removeTask(target);
@@ -89,9 +101,20 @@ public class ModelManager extends ComponentManager implements Model {
         return new UnmodifiableObservableList<>(filteredTasks);
     }
 
+    //@@author A0135998H
     @Override
     public void updateFilteredListToShowAll() {
+        indicateViewListChanged(ViewCommand.TYPE_ALL);
         filteredTasks.setPredicate(null);
+    }
+
+    //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowOverdue() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            return isOverdue(task);
+        });
+        indicateViewListChanged(ViewCommand.TYPE_OVERDUE);
     }
 
     @Override
@@ -153,6 +176,19 @@ public class ModelManager extends ComponentManager implements Model {
         public String toString() {
             return "name=" + String.join(", ", nameKeyWords);
         }
+    }
+
+    //@@author A0135998H
+    public boolean isOverdue(ReadOnlyTask task) {
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
+        if (task.getStartEndDateTime().isPresent()) {
+            StartEndDateTime startEndDateTime = task.getStartEndDateTime().get();
+            return currentDateTime.isAfter(startEndDateTime.getEndDateTime());
+        } else if (task.getDeadline().isPresent()) {
+            Deadline deadline = task.getDeadline().get();
+            return currentDateTime.isAfter(deadline.getValue());
+        }
+        return false;
     }
 
 }

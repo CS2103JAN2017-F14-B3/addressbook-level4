@@ -41,19 +41,19 @@ public class SelectCommandTest extends TaskListGuiTest {
 
     private void assertSelectionSuccess(int index) {
         commandBox.runCommand("select " + index);
-        assertResultMessage("Selected Person: " + index);
+        assertResultMessage("Selected Task: " + index);
         assertTaskSelected(index);
     }
 
     private void assertTaskSelected(int index) {
-        assertEquals(personListPanel.getSelectedPersons().size(), 1);
-        ReadOnlyTask selectedTask = personListPanel.getSelectedPersons().get(0); // TODO ui
-        assertEquals(personListPanel.getPerson(index - 1), selectedTask);
+        assertEquals(taskListPanel.getSelectedTasks().size(), 1);
+        ReadOnlyTask selectedTask = taskListPanel.getSelectedTasks().get(0); // TODO ui
+        assertEquals(taskListPanel.getTask(index - 1), selectedTask);
         //TODO: confirm the correct page is loaded in the Browser Panel
     }
 
     private void assertNoTaskSelected() {
-        assertEquals(personListPanel.getSelectedPersons().size(), 0); // TODO ui
+        assertEquals(taskListPanel.getSelectedTasks().size(), 0); // TODO ui
     }
 
 }
