@@ -21,9 +21,9 @@ public class TaskCard extends UiPart<Region> {
     @FXML
     private Label id;
     @FXML
-    private HBox startEndOnly;
+    private HBox showStartEndDate;
     @FXML
-    private HBox deadlineOnly;
+    private HBox showDeadline;
     @FXML
     private Label startDate;
     @FXML
@@ -41,18 +41,18 @@ public class TaskCard extends UiPart<Region> {
         // TODO make sure both address and email are available though
         // and also SLAP
         if (task.getStartEndDateTime().isPresent()) {
-            startEndOnly.setVisible(true);
-            deadlineOnly.setVisible(false);
+            showStartEndDate.setVisible(true);
+            showDeadline.setVisible(false);
             StartEndDateTime startEndDateTime = task.getStartEndDateTime().get();
             startDate.setText(startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
             endDate.setText(startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
         } else if (task.getDeadline().isPresent()) {
-            startEndOnly.setVisible(false);
-            deadlineOnly.setVisible(true);
+            showStartEndDate.setVisible(false);
+            showDeadline.setVisible(true);
             deadline.setText(task.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
         } else {
-            startEndOnly.setVisible(false);
-            deadlineOnly.setVisible(false);
+            showStartEndDate.setVisible(false);
+            showDeadline.setVisible(false);
         }
 
         initTags(task);
