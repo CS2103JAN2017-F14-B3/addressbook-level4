@@ -7,6 +7,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import seedu.address.commons.util.FxViewUtil;
+import seedu.address.logic.Logic;
 import seedu.address.logic.commands.ViewCommand;
 
 /**
@@ -22,26 +23,46 @@ public class TaskTabPanel extends UiPart<Region> {
     public static final String PENDING_TASKS_TAB = "pending";
     public static final String TODAY_TASKS_TAB = "today";
 
+    private Logic logic;
+
+    // Independent Ui parts residing in this Ui container
+    private TaskListPanel taskListPanel;
+
     @FXML
     private Tab allTasksTab;
+
+    @FXML
+    private AnchorPane allTasksListPanelPlaceholder;
 
     @FXML
     private Tab doneTasksTab;
 
     @FXML
+    private AnchorPane doneTasksListPanelPlaceholder;
+
+    @FXML
     private Tab floatingTasksTab;
+
+    @FXML
+    private AnchorPane floatingTasksListPanelPlaceholder;
 
     @FXML
     private Tab overdueTasksTab;
 
     @FXML
+    private AnchorPane overdueTasksListPanelPlaceholder;
+
+    @FXML
     private Tab pendingTasksTab;
 
     @FXML
-    private AnchorPane personListPanelPlaceholder;
+    private AnchorPane pendingTasksListPanelPlaceholder;
 
     @FXML
-    private static Tab todayTasksTab;
+    private Tab todayTasksTab;
+
+    @FXML
+    private AnchorPane todayTasksListPanelPlaceholder;
 
     @FXML
     private TabPane taskTabPanel;
@@ -49,9 +70,11 @@ public class TaskTabPanel extends UiPart<Region> {
     /**
      * @param placeholder The AnchorPane where the taskTabPanel must be inserted
      */
-    public TaskTabPanel(AnchorPane placeholder) {
+    public TaskTabPanel(AnchorPane placeholder, Logic logic) {
         super(FXML);
+        this.logic = logic;
         addToPlaceholder(placeholder);
+        fillTaskListPanel(allTasksListPanelPlaceholder);
     }
 
     private void addToPlaceholder(AnchorPane placeHolderPane) {
@@ -60,31 +83,43 @@ public class TaskTabPanel extends UiPart<Region> {
         placeHolderPane.getChildren().add(taskTabPanel);
     }
 
+    //todo fill
     public void switchTabPanel(String typeOfList) {
         switch(typeOfList) {
         case ViewCommand.TYPE_DONE :
             taskTabPanel.getSelectionModel().select(doneTasksTab);
+            fillTaskListPanel(doneTasksListPanelPlaceholder);
             break;
         case ViewCommand.TYPE_FLOATING :
             taskTabPanel.getSelectionModel().select(floatingTasksTab);
+            fillTaskListPanel(floatingTasksListPanelPlaceholder);
             break;
         case ViewCommand.TYPE_OVERDUE :
             taskTabPanel.getSelectionModel().select(overdueTasksTab);
+            fillTaskListPanel(overdueTasksListPanelPlaceholder);
             break;
         case ViewCommand.TYPE_PENDING :
             taskTabPanel.getSelectionModel().select(pendingTasksTab);
+            fillTaskListPanel(pendingTasksListPanelPlaceholder);
             break;
         case ViewCommand.TYPE_TODAY :
             taskTabPanel.getSelectionModel().select(todayTasksTab);
+            fillTaskListPanel(todayTasksListPanelPlaceholder);
             break;
         default :
             taskTabPanel.getSelectionModel().select(allTasksTab);
+            fillTaskListPanel(allTasksListPanelPlaceholder);
             break;
         }
     }
 
-    public AnchorPane getPersonListPlaceholder() {
-        return personListPanelPlaceholder;
+    void fillTaskListPanel(AnchorPane placeholder) {
+        placeholder.getChildren().clear();
+        taskListPanel = new TaskListPanel(placeholder, logic.getFilteredPersonList());
+    }
+
+    public TaskListPanel getTaskListPanel() {
+        return this.taskListPanel;
     }
 
 }
