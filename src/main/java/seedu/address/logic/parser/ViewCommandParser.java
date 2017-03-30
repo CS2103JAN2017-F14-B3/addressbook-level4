@@ -17,14 +17,14 @@ public class ViewCommandParser {
      * and returns an ViewCommand object for execution.
      */
     public Command parse(String args) {
-        String listType = args.trim().toLowerCase();
+        String typeOfList = args.trim().toLowerCase();
 
-        if (!ViewCommand.isValidCommand(listType)) {
+        if (!ViewCommand.isValidCommand(typeOfList)) {
             return new IncorrectCommand(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));
         }
 
-        return new ViewCommand(listType);
+        return new ViewCommand(typeOfList);
     }
 
 }

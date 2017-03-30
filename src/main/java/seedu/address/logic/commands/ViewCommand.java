@@ -28,10 +28,10 @@ public class ViewCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Listed all tasks";
 
-    private final String listType;
+    private final String typeOfList;
 
-    public ViewCommand(String listType) {
-        this.listType = listType;
+    public ViewCommand(String typeOfList) {
+        this.typeOfList = typeOfList;
     }
 
     public static boolean isValidCommand(String command) {
@@ -40,7 +40,7 @@ public class ViewCommand extends Command {
 
     @Override
     public CommandResult execute() {
-        switch(listType) {
+        switch(typeOfList) {
         case TYPE_OVERDUE:
             model.updateFilteredListToShowOverdue();
             break;
