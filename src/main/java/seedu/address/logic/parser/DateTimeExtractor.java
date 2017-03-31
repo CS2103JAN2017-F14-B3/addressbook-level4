@@ -22,9 +22,33 @@ import seedu.address.model.task.exceptions.PastDateTimeException;
 public class DateTimeExtractor {
     private final Logger logger = LogsCenter.getLogger(DateTimeExtractor.class);
 
-    // TODO note that the below formats allow tags to be before from, to and by
-    // Pattern that matches everything greedily so we can also include any number of [from] and [to]
-    private static final String preAmble = ".*";
+    // Regex that matches everything greedily so we can also include any number of from and to
+    // e.g. Matches "from by to" from the String "from by to by tmr"
+    private static final String preamblePattern = ".*";
+
+    // Pattern that specifies the argument [from].
+    // match the final from with spaces to prevent matching words like therefrom and fromage
+    private static final String fromArgPattern = "(?<fromArg>\\sfrom\\s)";
+
+    // match the argument value startDateTime that should follow from a [from]
+    // now match greedily all the way until the next expression to match
+    private static final String startDateTimePattern = "(?<startDateTime>.+)";
+    // match the argument name to with spaces to prevent matching words like auto and tomorrow
+    private static final String toArgPattern =  "(?<toArg>\\sto\\s)";
+
+    // now match LAZILY as the next expression that follows is optional
+    private static final String endDateTimePattern = "(?<endDateTime>.+?)";
+
+    // match a white space character and a tag with zero or more times
+    private static final String tagArgumentsPattern = "(?<tagArguments>(\\st/[^/]+)*)";
+    // TODO consider changing the following format
+    // match a white space character with zero or one tag;
+    // "(?<tagArguments>(\\stags\\s[^/]+)?)");
+
+    // match the final by with spaces to prevent matching words like baby and bypass
+    private static final String byArgPattern = "(?<byArg>\\sby\\s)";
+    // now match LAZILY as the next expression that follows is optional
+    private static final String deadlinePattern = "(?<deadline>.+?)";
 
     public static final Pattern HAS_STARTENDDATETIME_FORMAT = Pattern.compile(
             // match everything greedily so we can also include any number of [from] and [to]
