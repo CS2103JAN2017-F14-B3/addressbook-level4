@@ -17,13 +17,14 @@ import seedu.address.model.task.exceptions.PastDateTimeException;
 
 //@@author A0140023E
 /**
- * Extracts Deadlines and StartEndDateTime if they exist
- *
+ * Specialized class that extracts Deadlines and StartEndDateTime if they exist.
  */
 public class DateTimeExtractor {
     private final Logger logger = LogsCenter.getLogger(DateTimeExtractor.class);
 
     // TODO note that the below formats allow tags to be before from, to and by
+    // Pattern that matches everything greedily so we can also include any number of [from] and [to]
+    private static final String preAmble = ".*";
 
     public static final Pattern HAS_STARTENDDATETIME_FORMAT = Pattern.compile(
             // match everything greedily so we can also include any number of [from] and [to]
@@ -108,7 +109,7 @@ public class DateTimeExtractor {
         processedArgs = args;
     }
 
-    public void processDeadline() throws PastDateTimeException, IllegalValueException {
+    public void processDeadline() throws PastDateTimeException {
         // perhaps include the raw as well
         deadline = Optional.empty();
         // only try to look for deadline if there is no start end date time
@@ -118,7 +119,15 @@ public class DateTimeExtractor {
 
             if (matcher.matches()) {
                 final String matchedRawDeadline = matcher.group("deadline");
-                ZonedDateTime dateTime = ParserUtil.parseDateTimeString(matchedRawDeadline);
+                ZonedDateTime dateTime;
+                try {
+                    dateTime = ParserUtil.parseDateTimeString(matchedRawDeadline);
+                } catch (IllegalValueException e) {
+                    // TODO
+                    // This means what comes after by is not a date. Thus we stop here as no Deadline is found.
+                    // e.g. add Download song stand by me
+                    return;
+                }
 
                 deadline = Optional.of(new Deadline(dateTime));
                 processedArgs = new StringBuilder(processedArgs)
@@ -180,7 +189,7 @@ public class DateTimeExtractor {
     }
 
     public void processStartEndDateTime()
-            throws PastDateTimeException, InvalidDurationException, IllegalValueException {
+            throws PastDateTimeException, InvalidDurationException {
         // perhaps include the raw as well
         startEndDateTime = Optional.empty();
 
@@ -194,10 +203,18 @@ public class DateTimeExtractor {
             logger.info("----------------[PROCESS STARTENDDATETIME][End: "
                     + matcher.group("endDateTime") + "]");
 
-            ZonedDateTime startDateTime =
-                    ParserUtil.parseDateTimeString(matcher.group("startDateTime"));
-            ZonedDateTime endDateTime =
-                    ParserUtil.parseDateTimeString(matcher.group("endDateTime"));
+            ZonedDateTime startDateTime;
+            ZonedDateTime endDateTime;
+            try {
+                startDateTime = ParserUtil.parseDateTimeString(matcher.group("startDateTime"));
+                endDateTime = ParserUtil.parseDateTimeString(matcher.group("endDateTime"));
+            } catch (IllegalValueException e) {
+                // TODO
+                // This means that information between from and to are not dates. Thus we stop here
+                // as no StartEndDateTime is found.
+                // e.g. add Jim from X corporation to lemma
+                return;
+            }
 
             startEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
             processedArgs =
