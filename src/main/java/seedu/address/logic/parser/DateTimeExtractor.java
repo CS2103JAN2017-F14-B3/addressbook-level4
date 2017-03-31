@@ -22,49 +22,64 @@ import seedu.address.model.task.exceptions.PastDateTimeException;
 public class DateTimeExtractor {
     private final Logger logger = LogsCenter.getLogger(DateTimeExtractor.class);
 
-    // Regex that matches everything greedily so we can also include any number of from and to
-    // e.g. Matches "from by to" from the String "from by to by tmr"
-    private static final String preamblePattern = ".*";
+    /**
+     * Regex that matches the preamble before any argument.
+     * Matches everything greedily until the next regex so any number of from and to can be included.
+     * e.g. preamblePattern matches "from by to" from the String "from by to by tmr" in a Regex expression
+     * containing PREAMBLE_REGEX + ARG_NAME_FROM_REGEX
+     */
+    private static final String PREAMBLE_REGEX = ".*";
 
-    // Pattern that specifies the argument [from].
-    // match the final from with spaces to prevent matching words like therefrom and fromage
-    private static final String fromArgPattern = "(?<fromArg>\\sfrom\\s)";
+    /**
+     * Regex that matches the argument name [from].
+     * Matches a single whitespace character (i.e. \t\n\x0B\f\r) in between a "from".
+     * This prevents matching words such as therefrom and fromage.
+     */
+    private static final String ARG_NAME_FROM_REGEX = "(?<fromArg>\\sfrom\\s)";
 
-    // match the argument value startDateTime that should follow from a [from]
-    // now match greedily all the way until the next expression to match
-    private static final String startDateTimePattern = "(?<startDateTime>.+)";
-    // match the argument name to with spaces to prevent matching words like auto and tomorrow
-    private static final String toArgPattern =  "(?<toArg>\\sto\\s)";
+    /**
+     * Regex that matches the argument value startDateTime.
+     * Matches everything greedily.
+     */
+    private static final String ARG_VALUE_FROM_GREEDY_REGEX = "(?<startDateTime>.+)";
 
-    // now match LAZILY as the next expression that follows is optional
-    private static final String endDateTimePattern = "(?<endDateTime>.+?)";
+    /**
+     * Regex that matches the argument value startDateTime.
+     * Matches everything lazily.
+     */
+    private static final String ARG_VALUE_FROM_LAZY_REGEX = "(?<startDateTime>.+?)";
+
+    /**
+     * Regex that matches the argument name [to].
+     * Matches a single whitespace character (i.e. \t\n\x0B\f\r) in between a "to".
+     * This prevents matching words such as auto and tomorrow.
+     */
+    private static final String ARG_NAME_TO_REGEX =  "(?<toArg>\\sto\\s)";
+
+    /**
+     * Regex that matches the argument value endDateTime.
+     * Matches everything lazily.
+     */
+    private static final String ARG_VALUE_TO_LAZY_REGEX = "(?<endDateTime>.+?)";
 
     // match a white space character and a tag with zero or more times
-    private static final String tagArgumentsPattern = "(?<tagArguments>(\\st/[^/]+)*)";
+    private static final String ARG_ALL_TAGS_REGEX = "(?<tagArguments>(\\st/[^/]+)*)";
     // TODO consider changing the following format
     // match a white space character with zero or one tag;
     // "(?<tagArguments>(\\stags\\s[^/]+)?)");
 
     // match the final by with spaces to prevent matching words like baby and bypass
-    private static final String byArgPattern = "(?<byArg>\\sby\\s)";
+    private static final String ARG_NAME_BY_REGEX = "(?<byArg>\\sby\\s)";
     // now match LAZILY as the next expression that follows is optional
-    private static final String deadlinePattern = "(?<deadline>.+?)";
+    private static final String ARG_VALUE_BY_LAZY_REGEX = "(?<deadline>.+?)";
 
-    public static final Pattern HAS_STARTENDDATETIME_FORMAT = Pattern.compile(
-            // match everything greedily so we can also include any number of [from] and [to]
-            ".*"
-            // match the final from with spaces to prevent matching words like therefrom and fromage
-            + "(?<fromArg>\\sfrom\\s)"
-            // now match greedily all the way until the next expression to match
-            + "(?<startDateTime>.+)"
-            // match a to with spaces to prevent matching words like auto and tomorrow
-            + "\\sto\\s"
-            // now match LAZILY as the next expression that follows is optional
-            + "(?<endDateTime>.+?)"
-            // match a white space character and a tag with zero or more times
-            + "(?<tagArguments>(\\st/[^/]+)*)");
-            // match a white space character with zero or one tag; // TODO change tag format
-            // + "(?<tagArguments>(\\stags\\s[^/]+)?)");
+    public static final Pattern HAS_START_END_DATETIME_FORMAT = Pattern.compile(
+            PREAMBLE_REGEX
+            + ARG_NAME_FROM_REGEX
+            + ARG_VALUE_FROM_GREEDY_REGEX
+            + ARG_NAME_TO_REGEX
+            + ARG_VALUE_TO_LAZY_REGEX // lazy match as next expression is optional
+            + ARG_ALL_TAGS_REGEX);
 
     public static final Pattern HAS_DEADLINE_FORMAT = Pattern.compile(
             // match everything greedily so we can also include any number of [by]
@@ -219,7 +234,7 @@ public class DateTimeExtractor {
 
         // TODO add this
         //if (getProcessedDeadline() == null || !getProcessedDeadline().isPresent()) {
-        Matcher matcher = HAS_STARTENDDATETIME_FORMAT.matcher(processedArgs);
+        Matcher matcher = HAS_START_END_DATETIME_FORMAT.matcher(processedArgs);
 
         if (matcher.matches()) {
             logger.info("----------------[PROCESS STARTENDDATETIME][Start:"
@@ -263,7 +278,7 @@ public class DateTimeExtractor {
 
         // TODO add this
         //if (getProcessedDeadline() == null || !getProcessedDeadline().isPresent()) {
-        Matcher matcher = HAS_STARTENDDATETIME_FORMAT.matcher(processedArgs);
+        Matcher matcher = HAS_START_END_DATETIME_FORMAT.matcher(processedArgs);
 
         if (matcher.matches()) {
             final String matchedStartDateTime = matcher.group("startDateTime");
