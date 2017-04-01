@@ -58,18 +58,19 @@ public class StringUtil {
 
     //@@author A0140023E
     /**
-     * Replaces the substring specified by {@code startIndex} and {@code endIndex} of {@code s} with
-     * the String {@code replacement}. The substring begins at the specified {@code startIndex} and
-     * extends to the character at {@code endIndex} - 1 or to the end of the sequence if the endIndex is larger.
-     * exists. First the characters in the substring are removed and then the specified String is
-     * inserted at start. (The String will be lengthened to accommodate the specified String if
-     * necessary.)
+     * Returns {@code s} with substring of {@code s} specified by {@code startIndex} and {@code endIndex}
+     * replaced with the substring {@code replacement}. The substring begins at the
+     * specified {@code startIndex} and ends at {@code endIndex} - 1 or to the
+     * end of the s if {@code endIndex} is larger than length of s. First the characters in the substring
+     * are removed and then the specified String is inserted at {@code startIndex}. (The String will be
+     * lengthened to accommodate the specified String if necessary.)
      *
-     * @param s
-     * @param startIndex
-     * @param endIndex
-     * @param replacement
-     * @return
+     * @param s the String that contains the substring to be replaced specified by {@code startIndex} and
+     *        {@code endIndex}
+     * @param startIndex The beginning index, inclusive.
+     * @param endIndex The ending index, exclusive.
+     * @param replacement the substring to replace
+     * @return s with substring replaced
      * @see StringBuilder#replace(int, int, String)
      */
     public static String replace(String s, int startIndex, int endIndex, String replacement) {
