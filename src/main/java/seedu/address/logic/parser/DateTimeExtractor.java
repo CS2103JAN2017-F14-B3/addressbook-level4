@@ -5,8 +5,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.StringUtil;
@@ -361,7 +359,7 @@ public class DateTimeExtractor {
     }
 
     /**
-     * Returns the argument after processing
+     * Returns the arguments after processing
      */
     public String getProcessedArgs() {
         return processedArgs;
