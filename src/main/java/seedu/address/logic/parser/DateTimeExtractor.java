@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.commons.util.StringUtil;
 import seedu.address.model.task.Deadline;
 import seedu.address.model.task.StartEndDateTime;
 import seedu.address.model.task.exceptions.InvalidDurationException;
@@ -129,31 +130,31 @@ public class DateTimeExtractor {
     /**
      * Contains the Deadline after processing. Empty if does not exist.
      */
-    private Optional<Deadline> deadline;
+    private Optional<Deadline> processedDeadline;
     /**
      * Contains the raw Deadline string after processing. Empty if does not exist.
      */
-    private Optional<String> rawDeadline;
+    private Optional<String> processedRawDeadline;
 
     /**
      * Contains the startEndDateTime after processing. Empty if does not exist.
      */
-    private Optional<StartEndDateTime> startEndDateTime;
+    private Optional<StartEndDateTime> processedStartEndDateTime;
     /**
      * Contains the raw startDateTime string after processing. Empty if does not exist.
      */
-    private Optional<String> rawStartDateTime;
+    private Optional<String> processedRawStartDateTime;
     /**
      * Contains the raw endDateTime string after processing. Empty if does not exist.
      */
-    private Optional<String> rawEndDateTime;
+    private Optional<String> processedRawEndDateTime;
 
     public DateTimeExtractor(String args) {
         processedArgs = args;
     }
 
     public void processDeadline() throws PastDateTimeException {
-        deadline = Optional.empty();
+        processedDeadline = Optional.empty();
 
         try {
             processRawDeadline();
@@ -163,12 +164,14 @@ public class DateTimeExtractor {
             // e.g. add Download song stand by me
             return;
         }
-        if (rawDeadline.isPresent()) {
+
+        if (processedRawDeadline.isPresent()) {
             try {
                 // Note that if performance is a concern, we should process the Deadline directly instead
                 // of calling processRawDeadline so to avoid parsing dates twice
                 // i.e. once in processRawDeadline and once in processDeadline
-                deadline = Optional.of(new Deadline(ParserUtil.parseDateTimeString(rawDeadline.get())));
+                processedDeadline =
+                        Optional.of(new Deadline(ParserUtil.parseDateTimeString(processedRawDeadline.get())));
             } catch (IllegalValueException e) {
                 // TODO message
                 logger.severe("TODO processRawDeadline() should have ensured that it is a valid date.");
@@ -176,43 +179,38 @@ public class DateTimeExtractor {
         }
     }
 
-    /**
-     * TODO Does not throw PastDateTimeException
-     * @throws IllegalValueException
-     */
     public void processRawDeadline() throws IllegalValueException {
         // already processed, do not re-process
-        if (rawDeadline != null) {
+        if (processedRawDeadline != null) {
             logger.warning("Trying to re-process a processed deadline");
             return;
         }
-        rawDeadline = Optional.empty();
+        processedRawDeadline = Optional.empty();
 
         Matcher matcher = HAS_DEADLINE_FORMAT.matcher(processedArgs);
 
-        if (matcher.matches()) {
-            final String matchedRawDeadline = matcher.group("deadline");
-            if (!ParserUtil.isDateTimeString(matchedRawDeadline)) {
-                return;
-            }
-
-            // Note that we still do not know the exact date/time of the deadline so it can be a date in the past.
-            rawDeadline = Optional.of(matchedRawDeadline);
-
-            // Date is valid so we can extract the arguments out. However, if it is a past date,
-            // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
-            // not allowing the command to continue.
-            processedArgs = new StringBuilder(processedArgs)
-                    .replace(matcher.start("byArg"), matcher.end("deadline"), "")
-                    .toString();
-        } else {
+        if (!matcher.matches()) {
             logger.info("----------------[PROCESS RAW DEADLINE][No deadline found]");
+            return;
         }
+
+        final String matchedRawDeadline = matcher.group("deadline");
+        if (!ParserUtil.isDateTimeString(matchedRawDeadline)) {
+            return;
+        }
+
+        // Note that we still do not know the exact date/time of the deadline so it can be a date in the past.
+        processedRawDeadline = Optional.of(matchedRawDeadline);
+
+        // Date is valid so we can extract the arguments out. However, if it is a past date,
+        // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
+        // not allowing the command to continue.
+        processedArgs = extractArguments(matcher.start("byArg"), matcher.end("deadline"));
     }
 
     public void processStartEndDateTime()
             throws PastDateTimeException, InvalidDurationException {
-        startEndDateTime = Optional.empty();
+        processedStartEndDateTime = Optional.empty();
 
         try {
             processRawStartEndDateTime();
@@ -223,15 +221,15 @@ public class DateTimeExtractor {
             // e.g. add Travel from Singapore to Malaysia
             return;
         }
-        if (rawStartDateTime.isPresent() && rawEndDateTime.isPresent()) {
+        if (processedRawStartDateTime.isPresent() && processedRawEndDateTime.isPresent()) {
             try {
                 // Note that if performance is a concern, we should process the startEndDateTime directly instead
                 // of calling processRawStartEndDateTime() so to avoid parsing dates twice
                 // i.e. once in processRawStartEndDateTime and once in processStartEndDateTime
-                startEndDateTime =
+                processedStartEndDateTime =
                         Optional.of(new StartEndDateTime(
-                                ParserUtil.parseDateTimeString(rawStartDateTime.get()),
-                                ParserUtil.parseDateTimeString(rawEndDateTime.get())));
+                                ParserUtil.parseDateTimeString(processedRawStartDateTime.get()),
+                                ParserUtil.parseDateTimeString(processedRawEndDateTime.get())));
             } catch (IllegalValueException e) {
                 // TODO message
                 logger.severe("TODO processStartEndDateTime() should have ensured that it is a valid date.");
@@ -239,52 +237,46 @@ public class DateTimeExtractor {
         }
     }
 
-    /**
-     * TODO Does not throw PastDateTimeException and InvalidDurationException
-     * @throws IllegalValueException
-     */
     public void processRawStartEndDateTime() throws IllegalValueException {
         // already processed, do not re-process
-        if (rawStartDateTime != null && rawEndDateTime != null) {
+        if (processedRawStartDateTime != null && processedRawEndDateTime != null) {
             logger.warning("Trying to re-process a processed StartEndDateTime");
             return;
         }
-        rawStartDateTime = Optional.empty();
-        rawEndDateTime = Optional.empty();
+        processedRawStartDateTime = Optional.empty();
+        processedRawEndDateTime = Optional.empty();
 
         Matcher matcher = HAS_START_END_DATETIME_FORMAT.matcher(processedArgs);
 
-        if (matcher.matches()) {
-            final String matchedStartDateTime = matcher.group("startDateTime");
-            final String matchedEndDateTime = matcher.group("endDateTime");
-
-            logger.info("----------------[PROCESS RAWSTARTENDDATETIME][Start:"
-                    + matchedStartDateTime + "]");
-            logger.info("----------------[PROCESS RAWSTARTENDDATETIME][End: "
-                    + matchedEndDateTime + "]");
-
-            if (!ParserUtil.isDateTimeString(matchedStartDateTime)
-                    || !ParserUtil.isDateTimeString(matchedEndDateTime)) {
-                return;
-            }
-
-            // Note that we still do not know the exact date/time of the dates so they can be dates in the past.
-            // We also do not know if the end date will be after the start date.
-            rawStartDateTime = Optional.of(matchedStartDateTime);
-            rawEndDateTime = Optional.of(matchedEndDateTime);
-
-            // Dates are valid so we can extract the arguments out. However, if there is any past date,
-            // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
-            // not allowing the command to continue. Similarly, a InvalidDurationException will be thrown if the
-            // End Date comes after the Start Date.
-            processedArgs =
-                    new StringBuilder(processedArgs).replace(matcher.start("fromArg"),
-                            matcher.end("endDateTime"), "").toString();
-        } else {
+        if (!matcher.matches()) {
             logger.info("----------------[PROCESS RAWSTARTENDDATETIME][No Start and End Date Time found]");
+            return;
         }
+
+        final String matchedStartDateTime = matcher.group("startDateTime");
+        final String matchedEndDateTime = matcher.group("endDateTime");
+
+        logger.info("----------------[PROCESS RAWSTARTENDDATETIME][Start:"
+                + matchedStartDateTime + "]");
+        logger.info("----------------[PROCESS RAWSTARTENDDATETIME][End: "
+                + matchedEndDateTime + "]");
+
+        if (!ParserUtil.isDateTimeString(matchedStartDateTime)
+                || !ParserUtil.isDateTimeString(matchedEndDateTime)) {
+            return;
+        }
+
+        // Note that we still do not know the exact date/time of the dates so they can be dates in the past.
+        // We also do not know if the end date will be after the start date.
+        processedRawStartDateTime = Optional.of(matchedStartDateTime);
+        processedRawEndDateTime = Optional.of(matchedEndDateTime);
+
+        // Dates are valid so we can extract the arguments out. However, if there is any past date,
+        // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
+        // not allowing the command to continue. Similarly, a InvalidDurationException will be thrown if the
+        // End Date comes after the Start Date.
+        processedArgs = extractArguments(matcher.start("fromArg"), matcher.end("endDateTime"));
     }
-    // TODO processRawStartDateTime and processRawEndDateTime only for special case for EditCommandParser
 
     public void processRawStartDateTime() throws IllegalValueException {
         // already processed, do not re-process
@@ -293,74 +285,79 @@ public class DateTimeExtractor {
             // re-process because if we call others first gg?
         //}
         // note the above will make edit 4 from Friday to Saturday fail
-        if (rawStartDateTime == null) {
-            rawStartDateTime = Optional.empty();
+        if (processedRawStartDateTime == null) {
+            processedRawStartDateTime = Optional.empty();
         }
 
         //rawStartDateTime = Optional.empty();
 
         Matcher matcher = HAS_START_DATETIME_FORMAT.matcher(processedArgs);
 
-        if (matcher.matches()) {
-            final String matchedStartDateTime = matcher.group("startDateTime");
-            logger.info("----------------[PROCESS RAWSTARTDATETIME][Start:"
-                    + matchedStartDateTime + "]");
-            if (!ParserUtil.isDateTimeString(matchedStartDateTime)) {
-                return;
-            }
-
-            // Note that we still do not know the exact date/time of the date so it can be a date in the past.
-            // We also do not know if the end date will be after the start date.
-            rawStartDateTime = Optional.of(matchedStartDateTime);
-
-            // Date is valid so we can extract the arguments out. However, if there is any past date,
-            // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
-            // not allowing the command to continue. Similarly, a InvalidDurationException will be thrown if the
-            // End Date comes after the Start Date.
-            processedArgs =
-                    new StringBuilder(processedArgs).replace(matcher.start("fromArg"),
-                            matcher.end("startDateTime"), "").toString();
-        } else {
-            logger.info("----------------[PROCESS RAWSTARTDATETIME][No Start Time found]");
+        if (!matcher.matches()) {
+            logger.info("----------------[PROCESS RAWSTARTDATETIME][No Start Date/Time found]");
+            return;
         }
+
+        final String matchedStartDateTime = matcher.group("startDateTime");
+
+        logger.info("----------------[PROCESS RAWSTARTDATETIME][Start:"
+                + matchedStartDateTime + "]");
+
+        if (!ParserUtil.isDateTimeString(matchedStartDateTime)) {
+            return;
+        }
+
+        // Note that we still do not know the exact date/time of the date so it can be a date in the past.
+        // We also do not know if the end date will be after the start date.
+        processedRawStartDateTime = Optional.of(matchedStartDateTime);
+
+        // Date is valid so we can extract the arguments out. However, if there is any past date,
+        // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
+        // not allowing the command to continue. Similarly, an InvalidDurationException will be thrown if the
+        // End Date comes after the Start Date.
+        processedArgs = extractArguments(matcher.start("fromArg"), matcher.end("startDateTime"));
     }
+
 
     public void processRawEndDateTime() throws IllegalValueException {
         // TODO only initialize if haven't initialized
-        if (rawEndDateTime == null) {
-            rawEndDateTime = Optional.empty();
+        if (processedRawEndDateTime == null) {
+            processedRawEndDateTime = Optional.empty();
         }
 
         Matcher matcher = HAS_END_DATETIME_FORMAT.matcher(processedArgs);
 
-        if (matcher.matches()) {
-            final String matchedEndDateTime = matcher.group("endDateTime");
-            logger.info("----------------[PROCESS RAWENDDATETIME][End:"
-                    + matchedEndDateTime + "]");
-            if (!ParserUtil.isDateTimeString(matchedEndDateTime)) {
-                return;
-            }
-            rawEndDateTime = Optional.of(matchedEndDateTime);
-            // TODO whether the comment about past date time still need to be kept
-            // since we don't actually know the date or time we don't know if it is past date yet
-            // so no need to construct StartEndDateTime or check if it is past date
-            // no InvalidDurationException as well
-            // NO new StartEndDateTime();
-
-            // assuming that rawStart and end will result into not a past date time and invaliddurationexception
-            // but past date times don't pass through anyway later on even with this "wrong" processedArgs
-            // because exceptions will be thrown later
-            processedArgs =
-                    new StringBuilder(processedArgs).replace(matcher.start("toArg"),
-                            matcher.end("endDateTime"), "").toString();
-            // there will be extra whitespaces after extracting out the start and end date
-            // e.g. meeting from Wednesday to Thursday t/tag => meeting from t/tag
-            // so we will normalize the whitespace
-            processedArgs = StringUtils.normalizeSpace(processedArgs);
-        } else {
-            logger.info("----------------[PROCESS RAWENDDATETIME][No Start Time found]");
+        if (!matcher.matches()) {
+            logger.info("----------------[PROCESS RAWENDDATETIME][No End Date/Time found]");
+            return;
         }
 
+        final String matchedEndDateTime = matcher.group("endDateTime");
+
+        logger.info("----------------[PROCESS RAWENDDATETIME][End:"
+                + matchedEndDateTime + "]");
+
+        if (!ParserUtil.isDateTimeString(matchedEndDateTime)) {
+            return;
+        }
+
+        // Note that we still do not know the exact date/time of the date so it can be a date in the past.
+        // We also do not know if the end date will be after the start date.
+        processedRawEndDateTime = Optional.of(matchedEndDateTime);
+
+        // Date is valid so we can extract the arguments out. However, if there is any past date,
+        // the processed argument becomes invalid but a PastDateTimeException will be thrown anyway, thus
+        // not allowing the command to continue. Similarly, an InvalidDurationException will be thrown if the
+        // End Date comes after the Start Date.
+        processedArgs = extractArguments(matcher.start("toArg"), matcher.end("endDateTime"));
+    }
+
+    /**
+     * Returns the processed arguments that have the arguments specified by
+     * {@code startIndex} to {@code endIndex} extracted out.
+     */
+    private String extractArguments(int startIndex, int endIndex) {
+        return StringUtil.replace(processedArgs, startIndex, endIndex, "");
     }
 
     /**
@@ -374,34 +371,34 @@ public class DateTimeExtractor {
      * Returns the processed deadline if it exists, otherwise returns empty. Returns null if not processed.
      */
     public Optional<Deadline> getProcessedDeadline() {
-        return deadline;
+        return processedDeadline;
     }
 
     /**
-     * Returns the raw deadline if it exists, otherwise returns empty. Returns null if not processed.
+     * Returns the processed raw deadline if it exists, otherwise returns empty. Returns null if not processed.
      */
     public Optional<String> getProcessedRawDeadline() {
-        return rawDeadline;
+        return processedRawDeadline;
     }
 
     /**
      * Returns the processed startEndDateTime if it exists, otherwise returns empty. Returns null if not processed.
      */
     public Optional<StartEndDateTime> getProcessedStartEndDateTime() {
-        return startEndDateTime;
+        return processedStartEndDateTime;
     }
 
     /**
-     * Returns the processed startDateTime if it exists, otherwise returns empty. Returns null if not processed.
+     * Returns the processed raw startDateTime if it exists, otherwise returns empty. Returns null if not processed.
      */
-    public Optional<String> getProcessedStartDateTime() {
-        return rawStartDateTime;
+    public Optional<String> getProcessedRawStartDateTime() {
+        return processedRawStartDateTime;
     }
 
     /**
-     * Returns the processed endDateTime if it exists, otherwise returns empty. Returns null if not processed.
+     * Returns the processed raw endDateTime if it exists, otherwise returns empty. Returns null if not processed.
      */
-    public Optional<String> getProcessedEndDateTime() {
-        return rawEndDateTime;
+    public Optional<String> getProcessedRawEndDateTime() {
+        return processedRawEndDateTime;
     }
 }

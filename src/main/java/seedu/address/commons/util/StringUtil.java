@@ -55,4 +55,28 @@ public class StringUtil {
     public static boolean isUnsignedInteger(String s) {
         return s != null && s.matches("^0*[1-9]\\d*$");
     }
+
+    //@@author A0140023E
+    /**
+     * Replaces the substring specified by {@code startIndex} and {@code endIndex} of {@code s} with
+     * the String {@code replacement}. The substring begins at the specified {@code startIndex} and
+     * extends to the character at {@code endIndex} - 1 or to the end of the sequence if the endIndex is larger.
+     * exists. First the characters in the substring are removed and then the specified String is
+     * inserted at start. (The String will be lengthened to accommodate the specified String if
+     * necessary.)
+     *
+     * @param s
+     * @param startIndex
+     * @param endIndex
+     * @param replacement
+     * @return
+     * @see StringBuilder#replace(int, int, String)
+     */
+    public static String replace(String s, int startIndex, int endIndex, String replacement) {
+        assert s != null && replacement != null;
+
+        StringBuilder sb = new StringBuilder(s);
+        sb.replace(startIndex, endIndex, replacement);
+        return sb.toString();
+    }
 }

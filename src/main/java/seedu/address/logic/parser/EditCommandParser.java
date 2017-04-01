@@ -85,8 +85,8 @@ public class EditCommandParser {
             editTaskDescriptor.setName(ParserUtil.parseName(preambleFields.get(1)));
 
             editTaskDescriptor.setRawDeadline(dateTimeExtractor.getProcessedRawDeadline());
-            editTaskDescriptor.setRawStartDateTime(dateTimeExtractor.getProcessedStartDateTime());
-            editTaskDescriptor.setRawEndDateTime(dateTimeExtractor.getProcessedEndDateTime());
+            editTaskDescriptor.setRawStartDateTime(dateTimeExtractor.getProcessedRawStartDateTime());
+            editTaskDescriptor.setRawEndDateTime(dateTimeExtractor.getProcessedRawEndDateTime());
 
 
             //editTaskDescriptor.setDeadline(
