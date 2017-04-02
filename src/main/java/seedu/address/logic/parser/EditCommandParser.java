@@ -103,6 +103,56 @@ public class EditCommandParser {
         // TODO note that there is a NoFieldEditedException handled in execute, thus to change
     }
 
+    /**
+     * Extracts date/time from the arguments if they exist and returns a {@link DateTimeExtractor} with the
+     * processed dates if they exist.
+     *
+     * @param args the arguments to extract date/time from
+     * @throws PastDateTimeException TODO
+     * @throws InvalidDurationException TODO
+     */
+    private DateTimeExtractor extractDates(String args) {
+        //    throws PastDateTimeException, InvalidDurationException {
+        DateTimeExtractor dateTimeExtractor = new DateTimeExtractor(args);
+        // process StartEndDateTime first because it is more constrained
+        // e.g. from [some date to some date] will be parsed as a single date if we process only the
+        // startDateTime first
+            dateTimeExtractor.processRawStartEndDateTime();
+            // Dates can't be parsed so we silently skip first
+            // all other exceptions have been handled
+            // Pass rose from Uncle to Jane by tmr
+            // we should not return an error because that case is a valid task
+            System.out.println("No date is found for start and end date");
+        // TODO Returns an exception in a method? Doesn't make sense
+        // Returns a string? seems brittle
+        try {
+            dateTimeExtractor.processRawDeadline();
+        } catch (IllegalValueException e) {
+            // No date is found so we silently skip
+            System.out.println("No date found for deadline!");
+        }
+        // TODO process from later
+        // because for example edit 10 test by 2 days from 25 Apr
+        // note again that edit 10 test by 2 days later from 25 Apr will ignore the from later
+        try {
+            dateTimeExtractor.processRawStartDateTime();
+        } catch (IllegalValueException e) {
+            // No date is found so we silently skip
+            System.out.println("No date found for start date only!");
+        }
+        // TODO process to later because it is even shorter
+        try {
+            dateTimeExtractor.processRawEndDateTime();
+        } catch (IllegalValueException e) {
+            // No date is found so we silently skip
+            System.out.println("No date found for start date only!");
+        }
+
+        return dateTimeExtractor;
+    }
+
+
+
     //@@author
     /**
      * Parses {@code Collection<String> tags} into an {@code Optional<UniqueTagList>} if {@code tags} is non-empty.

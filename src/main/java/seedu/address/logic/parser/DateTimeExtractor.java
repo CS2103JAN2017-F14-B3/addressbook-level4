@@ -87,7 +87,7 @@ public class DateTimeExtractor {
     // "(?<tagArguments>(\\stags\\s[^/]+)?)");
 
     /**
-     * Pattern that checks if a string contains a start and end date/time.
+     * Pattern that checks if a string contains a start and end date-time.
      * Can be used for adding or editing tasks with a start and end date/time.
      */
     public static final Pattern HAS_START_END_DATETIME_FORMAT = Pattern.compile(
@@ -99,7 +99,7 @@ public class DateTimeExtractor {
             + ARG_ALL_TAGS_REGEX);
 
     /**
-     * Pattern that checks if a string contains a deadline date/time.
+     * Pattern that checks if a string contains a deadline date-time.
      * Can be used for adding or editing tasks with a deadline.
      */
     public static final Pattern HAS_DEADLINE_FORMAT = Pattern.compile(
@@ -109,8 +109,8 @@ public class DateTimeExtractor {
             + ARG_ALL_TAGS_REGEX);
 
     /**
-     * Pattern that checks if a string contains a start date/time.
-     * Can be used for editing tasks that already has a start and end date/time.
+     * Pattern that checks if a string contains a start date-time.
+     * Can be used for editing tasks that already has a start and end date-time.
      */
     public static final Pattern HAS_START_DATETIME_FORMAT = Pattern.compile(
             PREAMBLE_REGEX
@@ -119,8 +119,8 @@ public class DateTimeExtractor {
             + ARG_ALL_TAGS_REGEX);
 
     /**
-     * Pattern that checks if a string contains a end date/time.
-     * Can be used for editing tasks that already has a start and end date/time.
+     * Pattern that checks if a string contains a end date-time.
+     * Can be used for editing tasks that already has a start and end date-time.
      */
     public static final Pattern HAS_END_DATETIME_FORMAT = Pattern.compile(
             PREAMBLE_REGEX
@@ -247,17 +247,17 @@ public class DateTimeExtractor {
         }
     }
 
-    public void processRawDeadline() throws IllegalValueException {
+    public void processRawDeadline() {
         if (isProcessedAndPresent(rawDeadline)) {
             logger.warning(String.format(MESSAGE_ALREADY_PROCESSED, "rawDeadline"));
             return;
         }
 
-        Matcher matcher = HAS_DEADLINE_FORMAT.matcher(processedArgs);
+        rawDeadline = Optional.empty();
 
+        Matcher matcher = HAS_DEADLINE_FORMAT.matcher(processedArgs);
         if (!matcher.matches()) {
             logger.info("----------------[PROCESS RAW DEADLINE][No deadline found]");
-            rawDeadline = Optional.empty();
             return;
         }
 
@@ -318,12 +318,12 @@ public class DateTimeExtractor {
             return;
         }
 
-        Matcher matcher = HAS_START_END_DATETIME_FORMAT.matcher(processedArgs);
+        rawStartDateTime = Optional.empty();
+        rawEndDateTime = Optional.empty();
 
+        Matcher matcher = HAS_START_END_DATETIME_FORMAT.matcher(processedArgs);
         if (!matcher.matches()) {
             logger.info("----------------[PROCESS RAWSTARTENDDATETIME][No Start and End Date Time found]");
-            rawStartDateTime = Optional.empty();
-            rawEndDateTime = Optional.empty();
             return;
         }
 
@@ -359,22 +359,21 @@ public class DateTimeExtractor {
         }
         // note the above will make edit 4 from Friday fail previously
 
-        Matcher matcher = HAS_START_DATETIME_FORMAT.matcher(processedArgs);
+        rawStartDateTime = Optional.empty();
 
+        Matcher matcher = HAS_START_DATETIME_FORMAT.matcher(processedArgs);
         if (!matcher.matches()) {
             logger.info("----------------[PROCESS RAWSTARTDATETIME][No Start Date/Time found]");
-            rawStartDateTime = Optional.empty();
             return;
         }
 
         final String matchedStartDateTime = matcher.group("startDateTime");
-
-        logger.info("----------------[PROCESS RAWSTARTDATETIME][Start:"
-                + matchedStartDateTime + "]");
-
         if (!ParserUtil.isDateTimeString(matchedStartDateTime)) {
+            logger.info("----------------[PROCESS RAWSTARTDATETIME][Start Date/Time found but not a date]");
             return;
         }
+        logger.info("----------------[PROCESS RAWSTARTDATETIME][Start:"
+                + matchedStartDateTime + "]");
 
         // Note that we still do not know the exact date/time of the date so it can be a date in the past.
         // We also do not know if the end date will be after the start date.
@@ -393,22 +392,21 @@ public class DateTimeExtractor {
             return;
         }
 
-        Matcher matcher = HAS_END_DATETIME_FORMAT.matcher(processedArgs);
+        rawEndDateTime = Optional.empty();
 
+        Matcher matcher = HAS_END_DATETIME_FORMAT.matcher(processedArgs);
         if (!matcher.matches()) {
             logger.info("----------------[PROCESS RAWENDDATETIME][No End Date/Time found]");
-            rawEndDateTime = Optional.empty();
             return;
         }
 
         final String matchedEndDateTime = matcher.group("endDateTime");
-
-        logger.info("----------------[PROCESS RAWENDDATETIME][End:"
-                + matchedEndDateTime + "]");
-
         if (!ParserUtil.isDateTimeString(matchedEndDateTime)) {
+            logger.info("----------------[PROCESS RAWENDDATETIME][End Date/Time found but not a date]");
             return;
         }
+        logger.info("----------------[PROCESS RAWENDDATETIME][End:"
+                + matchedEndDateTime + "]");
 
         // Note that we still do not know the exact date/time of the date so it can be a date in the past.
         // We also do not know if the end date will be after the start date.
