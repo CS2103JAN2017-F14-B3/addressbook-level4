@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.commons.util.CollectionUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.ParserUtil;
 import seedu.address.model.tag.UniqueTagList;
@@ -34,7 +33,7 @@ public class EditCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1 by the day after tomorrow";
 
     public static final String MESSAGE_EDIT_TASK_SUCCESS = "Edited Task: %1$s";
-    public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
+    public static final String MESSAGE_NOT_EDITED = "At least one field to edit that is different must be provided.";
     public static final String MESSAGE_DUPLICATE_TASK = "This task already exists in the task list.";
 
     private final int filteredTaskListIndex;
@@ -64,29 +63,20 @@ public class EditCommand extends Command {
         }
 
         ReadOnlyTask taskToEdit = lastShownList.get(filteredTaskListIndex);
-        //Task editedTask = createEditedTask(taskToEdit, editTaskDescriptor);
         try {
             editTaskDescriptor.processFields(taskToEdit);
-        } catch (PastDateTimeException e) {
-            throw new CommandException(e.getMessage());
-        } catch (InvalidDurationException e) {
-            throw new CommandException(e.getMessage());
-        } catch (IllegalValueException e) {
+        } catch (PastDateTimeException | InvalidDurationException | IllegalValueException e) {
             throw new CommandException(e.getMessage());
         }
 
-        // TODO convert to exception like a NoFieldEditedException
-        if (!this.editTaskDescriptor.isAnyFieldEdited()) {
+        if (!this.editTaskDescriptor.isAnyFieldEdited(taskToEdit)) {
             throw new CommandException(EditCommand.MESSAGE_NOT_EDITED);
         }
 
-        Name updatedName = editTaskDescriptor.getUpdatedName();
-        Optional<Deadline> updatedDeadline = editTaskDescriptor.getUpdatedDeadline(); // getUpdatedDeadline
-        // getUpdatedStartEndDateTime
-        Optional<StartEndDateTime> updatedStartEndDateTime = editTaskDescriptor.getUpdatedStartEndDateTime();
-        UniqueTagList updatedTagList = editTaskDescriptor.getUpdatedTagList();
-
-        Task editedTask = new Task(updatedName, updatedDeadline, updatedStartEndDateTime, updatedTagList);
+        Task editedTask = new Task(editTaskDescriptor.getUpdatedName(),
+                editTaskDescriptor.getUpdatedDeadline(),
+                editTaskDescriptor.getUpdatedStartEndDateTime(),
+                editTaskDescriptor.getUpdatedTagList());
 
         try {
             model.updateTask(filteredTaskListIndex, editedTask);
@@ -114,6 +104,19 @@ public class EditCommand extends Command {
         private UniqueTagList updatedTagList;
 
         public EditTaskDescriptor() {}
+
+        public EditTaskDescriptor(EditTaskDescriptor toCopy) {
+            name = toCopy.getName();
+            rawDeadline = toCopy.getRawDeadline();
+            rawStartDateTime = toCopy.getRawStartDateTime();
+            rawEndDateTime = toCopy.getRawEndDateTime();
+            tagList = toCopy.getTagList();
+
+            updatedName = toCopy.getUpdatedName();
+            updatedDeadline = toCopy.getUpdatedDeadline();
+            updatedStartEndDateTime = toCopy.getUpdatedStartEndDateTime();
+            updatedTagList = toCopy.getUpdatedTagList();
+        }
 
         public void processFields(ReadOnlyTask taskToEdit)
                 throws PastDateTimeException, InvalidDurationException, IllegalValueException {
@@ -228,25 +231,18 @@ public class EditCommand extends Command {
             updatedTagList = getTagList().orElseGet(taskToEdit::getTags);
         }
 
-        public EditTaskDescriptor(EditTaskDescriptor toCopy) {
-            name = toCopy.getName();
-            rawDeadline = toCopy.getRawDeadline();
-            rawStartDateTime = toCopy.getRawStartDateTime();
-            rawEndDateTime = toCopy.getRawEndDateTime();
-            tagList = toCopy.getTagList();
-
-            updatedName = toCopy.getUpdatedName();
-            updatedDeadline = toCopy.getUpdatedDeadline();
-            updatedStartEndDateTime = toCopy.getUpdatedStartEndDateTime();
-            updatedTagList = toCopy.getUpdatedTagList();
-        }
-
         /**
-         * Returns true if at least one field is edited.
+         * Returns true if at least one field that is different is edited.
          */
-        public boolean isAnyFieldEdited() {
-            // Note that we ignore raw fields because they are not real Task fields
-            return CollectionUtil.isAnyPresent(name, updatedDeadline, updatedStartEndDateTime, tagList);
+        public boolean isAnyFieldEdited(ReadOnlyTask taskToEdit) {
+            // note that the tags are added in alphabetical order and uses list compare vs set compare
+            if (updatedName.equals(taskToEdit.getName())
+                    && updatedDeadline.equals(taskToEdit.getDeadline())
+                    && updatedStartEndDateTime.equals(taskToEdit.getStartEndDateTime())
+                    && updatedTagList.equals(taskToEdit.getTags())) {
+                return false;
+            }
+            return true;
         }
 
         //// methods for initializing an EditTaskDescriptor
@@ -311,6 +307,5 @@ public class EditCommand extends Command {
         public UniqueTagList getUpdatedTagList() {
             return updatedTagList;
         }
-
     }
 }
