@@ -15,7 +15,7 @@ import seedu.address.model.task.exceptions.PastDateTimeException;
 
 //@@author A0140023E
 /**
- * Specialized class that extracts Deadlines and StartEndDateTime if they exist.
+ * Specialized class that can extract Deadline and StartEndDateTime from a command's arguments.
  */
 public class DateTimeExtractor {
 
@@ -223,16 +223,12 @@ public class DateTimeExtractor {
 
         deadline = Optional.empty();
 
-        try {
-            processRawDeadline();
-        } catch (IllegalValueException e) {
+        processRawDeadline();
+
+        if (!isProcessedAndPresent(rawDeadline)) {
             // TODO
             // This means what comes after by is not a date. Thus we stop here as no Deadline is found.
             // e.g. add Download song stand by me
-            return;
-        }
-
-        if (!isProcessedAndPresent(rawDeadline)) {
             return;
         }
 
@@ -243,7 +239,7 @@ public class DateTimeExtractor {
             deadline = Optional.of(new Deadline(ParserUtil.parseDateTimeString(rawDeadline.get())));
         } catch (IllegalValueException e) {
             logger.severe("processDeadline() failed with invalid date when processRawDeadline"
-                    + "should have ensured a valid date is provided if the raw has a value.");
+                    + "should have ensured a valid date is provided if the raw are present.");
         }
     }
 
@@ -263,8 +259,10 @@ public class DateTimeExtractor {
 
         final String matchedRawDeadline = matcher.group("deadline");
         if (!ParserUtil.isDateTimeString(matchedRawDeadline)) {
+            logger.info("----------------[PROCESS RAWS DEADLINE][Deadline found but not a date]");
             return;
         }
+        logger.info("----------------[PROCESS RAW DEADLINE][Start:" + matchedRawDeadline + "]");
 
         // Note that we still do not know the exact date/time of the deadline so it can be a date in the past.
         rawDeadline = Optional.of(matchedRawDeadline);
@@ -285,17 +283,13 @@ public class DateTimeExtractor {
 
         startEndDateTime = Optional.empty();
 
-        try {
-            processRawStartEndDateTime();
-        } catch (IllegalValueException e) {
+        processRawStartEndDateTime();
+
+        if (!isProcessedAndPresent(rawStartDateTime) || !isProcessedAndPresent(rawEndDateTime)) {
             // TODO
             // This means that information between from and to are not dates. Thus we stop here
             // as no StartEndDateTime is found.
             // e.g. add Travel from Singapore to Malaysia
-            return;
-        }
-
-        if (!isProcessedAndPresent(rawStartDateTime) || !isProcessedAndPresent(rawEndDateTime)) {
             return;
         }
 
@@ -308,11 +302,11 @@ public class DateTimeExtractor {
                             ParserUtil.parseDateTimeString(rawEndDateTime.get())));
         } catch (IllegalValueException e) {
             logger.severe("processStartEndDateTime() failed with invalid date when processRawStartEndDateTime"
-                    + "should have ensured a valid date is provided if the raw have values.");
+                    + "should have ensured a valid date is provided if the raw are present.");
         }
     }
 
-    public void processRawStartEndDateTime() throws IllegalValueException {
+    public void processRawStartEndDateTime() {
         if (isProcessedAndPresent(rawStartDateTime) || isProcessedAndPresent(rawEndDateTime)) {
             logger.warning(String.format(MESSAGE_ALREADY_PROCESSED_MULTI, "rawStartDateTime", "rawEndDateTime"));
             return;
@@ -329,16 +323,16 @@ public class DateTimeExtractor {
 
         final String matchedStartDateTime = matcher.group("startDateTime");
         final String matchedEndDateTime = matcher.group("endDateTime");
-
+        if (!ParserUtil.isDateTimeString(matchedStartDateTime)
+                || !ParserUtil.isDateTimeString(matchedEndDateTime)) {
+            logger.info("----------------[PROCESS RAWSTARTENDDATETIME][Start and End Date/Time found "
+                    + "but both/either not a date]");
+            return;
+        }
         logger.info("----------------[PROCESS RAWSTARTENDDATETIME][Start:"
                 + matchedStartDateTime + "]");
         logger.info("----------------[PROCESS RAWSTARTENDDATETIME][End: "
                 + matchedEndDateTime + "]");
-
-        if (!ParserUtil.isDateTimeString(matchedStartDateTime)
-                || !ParserUtil.isDateTimeString(matchedEndDateTime)) {
-            return;
-        }
 
         // Note that we still do not know the exact date/time of the dates so they can be dates in the past.
         // We also do not know if the end date will be after the start date.
@@ -352,7 +346,7 @@ public class DateTimeExtractor {
         processedArgs = extractArguments(matcher.start("fromArg"), matcher.end("endDateTime"));
     }
 
-    public void processRawStartDateTime() throws IllegalValueException {
+    public void processRawStartDateTime() {
         if (isProcessedAndPresent(rawStartDateTime)) {
             logger.warning(String.format(MESSAGE_ALREADY_PROCESSED, "rawStartDateTime"));
             return;
@@ -386,7 +380,7 @@ public class DateTimeExtractor {
         processedArgs = extractArguments(matcher.start("fromArg"), matcher.end("startDateTime"));
     }
 
-    public void processRawEndDateTime() throws IllegalValueException {
+    public void processRawEndDateTime() {
         if (isProcessedAndPresent(rawEndDateTime)) {
             logger.warning(String.format(MESSAGE_ALREADY_PROCESSED, "rawEndDateTime"));
             return;

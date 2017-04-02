@@ -51,12 +51,13 @@ public class AddCommandParser {
     }
 
     /**
-     * Extracts date/time from the arguments if they exist and returns a {@link DateTimeExtractor} with the
-     * processed dates if they exist.
+     * Extracts date-time sfrom the arguments if they exist and returns a {@link DateTimeExtractor}
+     * with the processed date-times if they exist.
      *
      * @param args the arguments to extract date/time from
-     * @throws PastDateTimeException TODO
-     * @throws InvalidDurationException TODO
+     * @throws PastDateTimeException if any of the extracted date-times are in the past
+     * @throws InvalidDurationException if a start and end date-time is found and the end date-time
+     *         is before or same as the start date-time
      */
     private DateTimeExtractor extractDates(String args)
             throws PastDateTimeException, InvalidDurationException {
