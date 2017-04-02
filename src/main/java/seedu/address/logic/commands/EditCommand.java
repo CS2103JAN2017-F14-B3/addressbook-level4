@@ -157,6 +157,7 @@ public class EditCommand extends Command {
                 if (getRawStartDateTime().isPresent() && getRawEndDateTime().isPresent()) {
                     updatedStartEndDateTime =
                             ParserUtil.parseNewStartEndDateTime(getRawStartDateTime(), getRawEndDateTime());
+                    return;
                 } else {
                     // TODO message
                     throw new IllegalValueException("Must have both start and end date-time");
