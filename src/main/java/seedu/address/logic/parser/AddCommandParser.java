@@ -27,7 +27,7 @@ public class AddCommandParser {
     public Command parse(String args) {
         DateTimeExtractor dateTimeExtractor;
         try {
-            dateTimeExtractor = extractDates(args);
+            dateTimeExtractor = extractDateTimes(args);
         } catch (PastDateTimeException e) {
             return new IncorrectCommand(e.getMessage());
         } catch (InvalidDurationException e) {
@@ -51,7 +51,7 @@ public class AddCommandParser {
     }
 
     /**
-     * Extracts date-time sfrom the arguments if they exist and returns a {@link DateTimeExtractor}
+     * Extracts date-times from the arguments if they exist and returns a {@link DateTimeExtractor}
      * with the processed date-times if they exist.
      *
      * @param args the arguments to extract date/time from
@@ -59,11 +59,12 @@ public class AddCommandParser {
      * @throws InvalidDurationException if a start and end date-time is found and the end date-time
      *         is before or same as the start date-time
      */
-    private DateTimeExtractor extractDates(String args)
+    private DateTimeExtractor extractDateTimes(String args)
             throws PastDateTimeException, InvalidDurationException {
         DateTimeExtractor dateTimeExtractor = new DateTimeExtractor(args);
-        // process StartEndDateTime first because it is more constrained
+        // process StartEndDateTime first because it is more likely to fail due to more constraints
         dateTimeExtractor.processStartEndDateTime();
+        // constraints for deadline are looser so it is less likely to fail
         dateTimeExtractor.processDeadline();
 
         return dateTimeExtractor;

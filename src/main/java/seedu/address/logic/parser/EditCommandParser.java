@@ -26,7 +26,7 @@ public class EditCommandParser {
      * and returns an EditCommand object for execution.
      */
     public Command parse(String args) {
-        DateTimeExtractor dateTimeExtractor = extractDates(args);
+        DateTimeExtractor dateTimeExtractor = extractDateTimes(args);
 
         // TODO ArgumentTokenizer became very irrelevant in this class but is it still relevant for other classes?
         ArgumentTokenizer argsTokenizer =
@@ -63,15 +63,16 @@ public class EditCommandParser {
      *
      * @param args the arguments to extract date/time from
      */
-    private DateTimeExtractor extractDates(String args) {
-        //    throws PastDateTimeException, InvalidDurationException {
+    private DateTimeExtractor extractDateTimes(String args) {
+        // TODO extract comments for testing
         DateTimeExtractor dateTimeExtractor = new DateTimeExtractor(args);
-        // process StartEndDateTime first because it is more constrained
+        // process StartEndDateTime first because it is more likely to fail due to more constraints
         // e.g. from [some date to some date] will be parsed as a single date if we process only the
         // startDateTime first
-        dateTimeExtractor.processRawStartEndDateTime();
         // Pass rose from Uncle to Jane by tmr
         // we should not return an error because that case is a valid task
+        dateTimeExtractor.processRawStartEndDateTime();
+        // constraints for deadline are looser so it is less likely to fail
         dateTimeExtractor.processRawDeadline();
         // TODO process from later
         // because for example edit 10 test by 2 days from 25 Apr
