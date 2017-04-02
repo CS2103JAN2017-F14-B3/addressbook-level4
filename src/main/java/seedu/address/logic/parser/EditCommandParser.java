@@ -54,7 +54,6 @@ public class EditCommandParser {
         }
 
         return new EditCommand(index.get(), editTaskDescriptor);
-        // TODO note that there is a NoFieldEditedException handled in execute, thus to change
     }
 
     /**

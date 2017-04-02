@@ -28,9 +28,7 @@ public class AddCommandParser {
         DateTimeExtractor dateTimeExtractor;
         try {
             dateTimeExtractor = extractDateTimes(args);
-        } catch (PastDateTimeException e) {
-            return new IncorrectCommand(e.getMessage());
-        } catch (InvalidDurationException e) {
+        } catch (PastDateTimeException | InvalidDurationException e) {
             return new IncorrectCommand(e.getMessage());
         }
 
