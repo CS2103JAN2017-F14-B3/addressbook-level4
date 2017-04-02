@@ -136,7 +136,6 @@ public class EditCommand extends Command {
             }
 
             if (taskToEdit.getDeadline().isPresent()) {
-                // Bubble up the exception
                 updatedDeadline = ParserUtil.parseEditedDeadline(getRawDeadline(), taskToEdit.getDeadline().get());
             } else {
                 updatedDeadline = ParserUtil.parseNewDeadline(getRawDeadline());
@@ -146,48 +145,74 @@ public class EditCommand extends Command {
         private void processStartEndDateTime(ReadOnlyTask taskToEdit)
                 throws PastDateTimeException, InvalidDurationException, IllegalValueException {
             updatedStartEndDateTime = Optional.empty();
-            if (getRawStartDateTime().isPresent() && !getRawEndDateTime().isPresent()) {
-                // TODO remove println
-                System.out.println("From only!");
-                if (taskToEdit.getStartEndDateTime().isPresent()) {
-                    // TODO should we wrap this into ParserUtil as well?
-                    final StartEndDateTime editedTaskStartEndDateTime = taskToEdit.getStartEndDateTime().get();
-                    ZonedDateTime startDateTime =
-                            ParserUtil.parseEditedDateTimeString(getRawStartDateTime().get(),
-                                    editedTaskStartEndDateTime.getStartDateTime());
-                    updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime,
-                            editedTaskStartEndDateTime.getEndDateTime()));
-                } else {
-                    // TODO message change
-                    throw new IllegalValueException("Start Date must comes with an End Date");
-                }
-            } else if (!getRawStartDateTime().isPresent() && getRawEndDateTime().isPresent()) {
-                // TODO remove println
-                System.out.println("To only!");
-                if (taskToEdit.getStartEndDateTime().isPresent()) {
-                    // TODO should we wrap this into ParserUtil as well?
-                    final StartEndDateTime editedTaskStartEndDateTime = taskToEdit.getStartEndDateTime().get();
-                    ZonedDateTime endDateTime =
-                            ParserUtil.parseEditedDateTimeString(getRawEndDateTime().get(),
-                                    editedTaskStartEndDateTime.getEndDateTime());
-                    updatedStartEndDateTime = Optional.of(
-                            new StartEndDateTime(editedTaskStartEndDateTime.getStartDateTime(), endDateTime));
-                } else {
-                    // TODO message change
-                    throw new IllegalValueException("End Date must come with a Start Date");
-                }
-            } else if (getRawStartDateTime().isPresent() && getRawEndDateTime().isPresent()) {
-                if (taskToEdit.getStartEndDateTime().isPresent()) {
-                    updatedStartEndDateTime =
-                            ParserUtil.parseEditedStartEndDateTime(getRawStartDateTime(), getRawEndDateTime(),
-                                    taskToEdit.getStartEndDateTime().get());
-                } else {
+
+            if (!getRawStartDateTime().isPresent() && !getRawEndDateTime().isPresent()) {
+                updatedStartEndDateTime = taskToEdit.getStartEndDateTime();
+                return;
+            }
+
+            // process date if not task has no start end date time
+            if (!taskToEdit.getStartEndDateTime().isPresent()) {
+                // has both raw start and end date time
+                if (getRawStartDateTime().isPresent() && getRawEndDateTime().isPresent()) {
                     updatedStartEndDateTime =
                             ParserUtil.parseNewStartEndDateTime(getRawStartDateTime(), getRawEndDateTime());
+                } else {
+                    // TODO message
+                    throw new IllegalValueException("Must have both start and end date-time");
                 }
-            } else {
-                updatedStartEndDateTime = taskToEdit.getStartEndDateTime();
             }
+
+            final StartEndDateTime originalStartEndDateTime = taskToEdit.getStartEndDateTime().get();
+
+            // process date if task has start and end date-time
+            if (getRawStartDateTime().isPresent() && getRawEndDateTime().isPresent()) {
+            // hasBothRawStartAndEndDateTime()
+                processUsingStartAndEndRaw(originalStartEndDateTime);
+            } else if (getRawStartDateTime().isPresent() && !getRawEndDateTime().isPresent()) {
+            // hasRawStartDateTimeOnly()
+                processUsingStartRaw(originalStartEndDateTime);
+            } else if (!getRawStartDateTime().isPresent() && getRawEndDateTime().isPresent()) {
+            // hasRawEndDateTimeOnly()
+                processUsingEndRaw(originalStartEndDateTime);
+            }
+        }
+
+        /**
+         * Process the updated StartEndDateTime with the raw start and date-time with reference to the
+         * original start-end date-time.
+         */
+        private void processUsingStartAndEndRaw(StartEndDateTime originalStartEndDateTime)
+                throws PastDateTimeException, InvalidDurationException, IllegalValueException {
+
+            updatedStartEndDateTime = ParserUtil.parseEditedStartEndDateTime(getRawStartDateTime(),
+                    getRawEndDateTime(), originalStartEndDateTime);
+        }
+
+        /**
+         * Process the updated StartEndDateTime with the raw start date-time with reference to the
+         * original end date time.
+         */
+        private void processUsingStartRaw(StartEndDateTime originalStartEndDateTime)
+                throws PastDateTimeException, InvalidDurationException, IllegalValueException {
+
+            ZonedDateTime startDateTime = ParserUtil.parseEditedDateTimeString(
+                    getRawStartDateTime().get(), originalStartEndDateTime.getStartDateTime());
+            ZonedDateTime endDateTime = originalStartEndDateTime.getEndDateTime();
+            updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
+        }
+
+        /**
+         * Process the updated StartEndDateTime with the raw end date-time with reference to the
+         * original start date time.
+         */
+        private void processUsingEndRaw(StartEndDateTime originalStartEndDateTime)
+                throws PastDateTimeException, InvalidDurationException, IllegalValueException {
+
+            ZonedDateTime startDateTime = originalStartEndDateTime.getStartDateTime();
+            ZonedDateTime endDateTime = ParserUtil.parseEditedDateTimeString(getRawEndDateTime().get(),
+                    originalStartEndDateTime.getEndDateTime());
+            updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
         }
 
         private void processTagList(ReadOnlyTask taskToEdit) {
