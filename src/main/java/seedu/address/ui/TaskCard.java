@@ -49,7 +49,7 @@ public class TaskCard extends UiPart<Region> {
         } else if (task.getDeadline().isPresent()) {
             showStartEndDate.setVisible(false);
             showDeadline.setVisible(true);
-            deadline.setText(task.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+            deadline.setText(task.getDeadline().get().getDateTime().format(ParserUtil.DATE_TIME_FORMAT));
         } else {
             showStartEndDate.setVisible(false);
             showDeadline.setVisible(false);

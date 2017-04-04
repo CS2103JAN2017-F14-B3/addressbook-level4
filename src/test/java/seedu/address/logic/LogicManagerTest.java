@@ -446,13 +446,14 @@ public class LogicManagerTest {
 
         /**
          * Generates a valid task using the given seed.
-         * Running this function with the same parameter values guarantees the returned task will have the same state.
+         * Running this function with the same parameter values guarantees the returned task will have the same state
+         * if it is using the same instance of {@link TestDataHelper}.
          * Each unique seed will generate a unique task object.
          *
          * @param seed used to generate the task data field values
          */
         Task generateTask(int seed) throws Exception {
-            // note to change
+            // TODO note to change
             return new Task(
                     new Name("Task" + seed),
                     Optional.of(new Deadline(startTestDateTime.plusDays(seed))),
@@ -464,6 +465,8 @@ public class LogicManagerTest {
 
         /** Generates the correct add command based on the task given */
         String generateAddCommand(Task task) {
+            // The date-times are transformed into a format that Natty can parse
+            // TODO use a human format
             StringBuffer cmd = new StringBuffer();
 
             cmd.append("add ");
@@ -473,7 +476,7 @@ public class LogicManagerTest {
             if (task.getDeadline().isPresent()) {
                 cmd.append(" by ");
                 // TODO change the format
-                cmd.append(task.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(task.getDeadline().get().getDateTime().format(ParserUtil.DATE_TIME_FORMAT));
             }
 
             if (task.getStartEndDateTime().isPresent()) {

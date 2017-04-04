@@ -261,7 +261,7 @@ public class ModelManager extends ComponentManager implements Model {
             return currentDateTime.isAfter(startEndDateTime.getEndDateTime());
         } else if (task.getDeadline().isPresent()) {
             Deadline deadline = task.getDeadline().get();
-            return currentDateTime.isAfter(deadline.getValue());
+            return currentDateTime.isAfter(deadline.getDateTime());
         }
         return false;
     }
@@ -280,7 +280,7 @@ public class ModelManager extends ComponentManager implements Model {
                     || currentDateTime.isAfter(startEndDateTime.getEndDateTime()));
         } else if (task.getDeadline().isPresent()) {
             Deadline deadline = task.getDeadline().get();
-            return !(currentDateTime.isAfter(deadline.getValue()));
+            return !(currentDateTime.isAfter(deadline.getDateTime()));
         }
         return false;
     }

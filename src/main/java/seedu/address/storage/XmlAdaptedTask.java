@@ -78,7 +78,7 @@ public class XmlAdaptedTask {
     private void setDeadlineElementIfPresent(Optional<Deadline> sourceDeadline) {
         if (sourceDeadline.isPresent()) {
             Deadline deadline = sourceDeadline.get();
-            deadlineElement = deadline.getValue().format(ParserUtil.DATE_TIME_FORMAT);
+            deadlineElement = deadline.getDateTime().format(ParserUtil.DATE_TIME_FORMAT);
         }
     }
 

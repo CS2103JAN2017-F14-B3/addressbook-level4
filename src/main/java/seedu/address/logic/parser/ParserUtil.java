@@ -42,6 +42,8 @@ public class ParserUtil {
     private static Parser dateTimeParser = new Parser(TimeZone.getDefault()); // TODO timezones
     // TODO decide if this is the right class
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
+    // TODO create format for XmlAdaptedTask only
+    // TODO create test format for LogicManagerTest
 
     //@@author
     /**
@@ -105,43 +107,65 @@ public class ParserUtil {
 
     //@@author A0140023E
     /**
-     * TODO comments. For new deadlines
-     * @param deadline
-     * @return
-     * @throws PastDateTimeException
-     * @throws IllegalValueException
+     * Parses a {@code Optional<String>} into an {@code Optional<Deadline>} if {@code deadline} is present.
      */
     public static Optional<Deadline> parseNewDeadline(Optional<String> deadline)
             throws PastDateTimeException, IllegalValueException {
+
         assert deadline != null;
+
         return deadline.isPresent() ? Optional.of(new Deadline(parseDateTimeString(deadline.get()))) : Optional.empty();
     }
 
     /**
-     * TODO Comments. For Edited deadlines
-     * @param rawDeadline
-     * @param previousDeadline
-     * @return
-     * @throws PastDateTimeException
-     * @throws IllegalValueException
+     * Parses a {@code Optional<String>} into an {@code Optional<Deadline>} relative to
+     * {@code previousDeadline} if {@code rawDeadline} is present.
      */
     public static Optional<Deadline> parseEditedDeadline(Optional<String> rawDeadline, Deadline previousDeadline)
             throws PastDateTimeException, IllegalValueException {
-        assert rawDeadline != null;
-        if (rawDeadline.isPresent()) {
-            return Optional.of(new Deadline(parseEditedDateTimeString(rawDeadline.get(), previousDeadline.getValue())));
-        } else {
+
+        assert rawDeadline != null && previousDeadline != null;
+
+        if (!rawDeadline.isPresent()) {
             return Optional.empty();
         }
+
+        ZonedDateTime parsedDateTime = parseEditedDateTimeString(rawDeadline.get(), previousDeadline.getDateTime());
+        return Optional.of(new Deadline(parsedDateTime));
     }
 
-    public static Optional<StartEndDateTime> parseEditedStartEndDateTime(Optional<String> startDateTime,
-            Optional<String> endDateTime, StartEndDateTime previousStartEndDateTime)
+    /**
+     * Parses parameters {@code Optional<String> startDateTime} and {@code Optional<String> endDateTime} into
+     * an {@code Optional<StartEndDateTime>} if they are present.
+     */
+    public static Optional<StartEndDateTime> parseNewStartEndDateTime(Optional<String> startDateTime,
+            Optional<String> endDateTime)
             throws PastDateTimeException, InvalidDurationException, IllegalValueException {
+
         assert startDateTime != null && endDateTime != null;
 
         if (!startDateTime.isPresent() || !endDateTime.isPresent()) {
-            // TODO If it is malformed should we just ignore or should we do further checks and throw an error?
+            return Optional.empty();
+        }
+
+        StartEndDateTime startEndDateTime = new StartEndDateTime(parseDateTimeString(startDateTime.get()),
+                                                                 parseDateTimeString(endDateTime.get()));
+
+        return Optional.of(startEndDateTime);
+    }
+
+    /**
+     * Parses parameters {@code Optional<String> startDateTime} and
+     * {@code Optional<String> endDateTime} relative to {@code previousStartEndDateTime} into an
+     * {@code Optional<StartEndDateTime>} if the parameters are present.
+     */
+    public static Optional<StartEndDateTime> parseEditedStartEndDateTime(Optional<String> startDateTime,
+            Optional<String> endDateTime, StartEndDateTime previousStartEndDateTime)
+            throws PastDateTimeException, InvalidDurationException, IllegalValueException {
+
+        assert startDateTime != null && endDateTime != null;
+
+        if (!startDateTime.isPresent() || !endDateTime.isPresent()) {
             return Optional.empty();
         }
 
@@ -152,21 +176,6 @@ public class ParserUtil {
         return Optional.of(startEndDateTime);
     }
 
-    public static Optional<StartEndDateTime> parseNewStartEndDateTime(Optional<String> startDateTime,
-            Optional<String> endDateTime)
-            throws PastDateTimeException, InvalidDurationException, IllegalValueException {
-        assert startDateTime != null && endDateTime != null;
-
-        if (!startDateTime.isPresent() || !endDateTime.isPresent()) {
-            // TODO If it is malformed should we just ignore or should we do further checks and throw an error?
-            return Optional.empty();
-        }
-
-        StartEndDateTime startEndDateTime = new StartEndDateTime(parseDateTimeString(startDateTime.get()),
-                                                                 parseDateTimeString(endDateTime.get()));
-
-        return Optional.of(startEndDateTime);
-    }
 
     public static ZonedDateTime parseEditedDateTimeString(String dateTime, ZonedDateTime previousDate)
             throws IllegalValueException {
@@ -190,6 +199,19 @@ public class ParserUtil {
                     // Neither does cases such as 2 hours after 25 Apr 8pm work
                     System.out.println("Relative do nothing!");
                 } else {
+                    // this means there is a bug somewhere as the date and time cannot be both inferred
+                    // if they are both inferred, they should be relative date or relative time
+                    assert !(group.isDateInferred() && group.isTimeInferred());
+
+                    String extractedDateTest;
+                    if (group.isDateInferred()) {
+                        extractedDateTest = new SimpleDateFormat("HH:mm:ss Z").format(dates.get(0));
+                    }
+
+                    if (group.isTimeInferred()) {
+                        extractedDateTest = new SimpleDateFormat("yyyy-MM-dd").format(dates.get(0));
+                    }
+
                     if (group.isDateInferred()) {
                         System.out.println("Date inferred");
                         // TODO do timezones properly
@@ -235,11 +257,30 @@ public class ParserUtil {
     public static ZonedDateTime parseDateTimeString(String dateTime) throws IllegalValueException {
         List<DateGroup> groups = dateTimeParser.parse(dateTime);
         // TODO check if only one group and only one date from list (date alternatives)
-        for (DateGroup group : groups) {
-            List<Date> dates = group.getDates();
-            if (dates.size() > 0) {
+        if (groups.size() == 0) {
+            throw new IllegalValueException(dateTime + " is not a valid date/time.");
+        }
+
+        if (groups.size() > 1) {
+            throw new IllegalValueException(
+                    "Multiple dates found when expecting only one date from " + dateTime);
+        }
+
+        List<Date> datesTest = groups.get(0).getDates();
+
+        // if there is at least one date group, there should be at least one date. This probably
+        // means there is a bug in Natty
+        assert datesTest.size() != 0;
+
+        if (datesTest.size() > 1) {
+            throw new IllegalValueException("Alternative dates found, cannot resolve ambiguity from" + dateTime);
+        }
+
+        //for (DateGroup group : groups) {
+        //    List<Date> dates = group.getDates();
+        //    if (dates.size() > 0) {
                 // TODO comment Avoid old Date class where possible format
-                Instant instant = dates.get(0).toInstant();
+                Instant instant = datesTest.get(0).toInstant();
                 ZoneId zoneId = ZoneId.systemDefault();
 
                 // TODO use a ZonedDateTime so user can see time in his timezone, perhaps
@@ -247,11 +288,13 @@ public class ParserUtil {
                 // we use ZonedDateTime
                 ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId);
                 return zonedDateTime;
-            }
-        }
-        throw new IllegalValueException(dateTime + " is not a valid date/time.");
+        //    }
+        //}
+        // TODO not expected to reach here
+        //throw new IllegalValueException(dateTime + " is not a valid date/time.");
     }
 
+    // DateTimeUtil
     // TODO maybe doesn't belong in ParserUtil
     /**
      * Returns if Date strings are valid DateTimes.

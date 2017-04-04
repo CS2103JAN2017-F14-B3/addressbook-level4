@@ -94,7 +94,7 @@ public class TestTask implements ReadOnlyTask {
         if (getDeadline().isPresent()) {
             sb.append(" by ");
             // TODO change the format
-            sb.append(getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+            sb.append(getDeadline().get().getDateTime().format(ParserUtil.DATE_TIME_FORMAT));
         }
 
         if (getStartEndDateTime().isPresent()) {
