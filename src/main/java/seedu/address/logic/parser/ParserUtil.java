@@ -273,21 +273,21 @@ public class ParserUtil {
         assert datesTest.size() != 0;
 
         if (datesTest.size() > 1) {
-            throw new IllegalValueException("Alternative dates found, cannot resolve ambiguity from" + dateTime);
+            throw new IllegalValueException("Date-time alternatives found, please only enter one date" + dateTime);
         }
 
         //for (DateGroup group : groups) {
         //    List<Date> dates = group.getDates();
         //    if (dates.size() > 0) {
                 // TODO comment Avoid old Date class where possible format
-                Instant instant = datesTest.get(0).toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
+        Instant instant = datesTest.get(0).toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
 
                 // TODO use a ZonedDateTime so user can see time in his timezone, perhaps
                 // Instant can be used where possible and only when reading input and output from user
                 // we use ZonedDateTime
-                ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId);
-                return zonedDateTime;
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId);
+        return zonedDateTime;
         //    }
         //}
         // TODO not expected to reach here
@@ -297,11 +297,34 @@ public class ParserUtil {
     // DateTimeUtil
     // TODO maybe doesn't belong in ParserUtil
     /**
-     * Returns if Date strings are valid DateTimes.
+     * Returns true if a String contains only a single date-time string parseable by Natty, otherwise returns false.
      */
-    public static boolean isDateTimeString(String dateTime) {
+    public static boolean isSingleDateTimeString(String dateTime) {
+        List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
+        // Example: "Wed ~ Thur" will result in 2 date groups
+        if (dateGroups.size() == 0 || dateGroups.size() > 1) {
+            return false;
+        }
+
+        assert dateGroups.size() == 1; // to check for logical error
+
+        List<Date> dateAlternatives = dateGroups.get(0).getDates();
+
+        // if there is at least one date group, there should always be at least one date.
+        // Therefore, if the assertion fail there might be a bug in Natty.
+        assert dateAlternatives.size() != 0;
+
+        // Example: "Wed or Thur" will result in 2 date alternatives
+        if (dateAlternatives.size() > 1) {
+            return false;
+        } else {
+            assert dateAlternatives.size() == 1; // to check for logical error
+            return true;
+        }
+    }
+
+    public static boolean isSingleDateTimeStringOld(String dateTime) {
         List<DateGroup> groups = dateTimeParser.parse(dateTime);
-        // TODO check if only one group and only one date from list (date alternatives)
         for (DateGroup group : groups) {
             List<Date> dates = group.getDates();
             if (dates.size() > 0) {
