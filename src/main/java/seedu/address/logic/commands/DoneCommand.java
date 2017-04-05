@@ -18,7 +18,6 @@ public class DoneCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks an existing task "
             + "by the index number used in the last task listing.\n"
-            + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
 
