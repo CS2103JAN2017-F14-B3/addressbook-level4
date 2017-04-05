@@ -2,8 +2,8 @@ package seedu.address.model;
 
 import java.time.ZonedDateTime;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.Stack;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import javafx.collections.transformation.FilteredList;
