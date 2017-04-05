@@ -20,6 +20,8 @@ public class Task implements ReadOnlyTask {
 
     private Optional<Deadline> deadline;
 
+    private boolean done;
+
     /**
      * Every field must not be null except for the {@code Optional} fields.
      */
@@ -30,6 +32,7 @@ public class Task implements ReadOnlyTask {
         this.deadline = deadline;
         this.startEndDateTime = startEndDateTime;
         this.tags = new UniqueTagList(tags); // protect internal tags from changes in the arg list
+        this.done = false;
     }
 
     /**
@@ -61,6 +64,16 @@ public class Task implements ReadOnlyTask {
     public void setDeadline(Deadline dateTime) {
         assert dateTime != null;
         this.deadline = Optional.of(dateTime);
+    }
+
+    //@@author A0135998H
+    @Override
+    public boolean isDone() {
+        return done;
+    }
+
+    public void markDone() {
+        done = !done;
     }
 
     @Override

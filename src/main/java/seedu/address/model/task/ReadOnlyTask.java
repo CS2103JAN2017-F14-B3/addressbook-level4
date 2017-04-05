@@ -35,6 +35,11 @@ public interface ReadOnlyTask {
      */
     UniqueTagList getTags();
 
+    /**
+     * Gets the status of the task.
+     */
+    boolean isDone();
+
     //@@author A0140023E
     /**
      * Returns true if both have the same state. (interfaces cannot override .equals)
@@ -71,6 +76,7 @@ public interface ReadOnlyTask {
         buildDeadlineString(builder);
         buildStartEndDateTimeString(builder);
         buildTagsString(builder);
+        buildDoneString(builder);
 
         return builder.toString();
     }
@@ -99,6 +105,14 @@ public interface ReadOnlyTask {
     default void buildTagsString(final StringBuilder builder) {
         builder.append(" Tags: ");
         getTags().forEach(builder::append);
+    }
+
+    default void buildDoneString(final StringBuilder builder) {
+        if (isDone()) {
+            builder.append(" Completed");
+        } else {
+            builder.append(" Not Completed");
+        }
     }
 
 }
