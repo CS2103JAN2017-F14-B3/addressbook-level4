@@ -3,6 +3,7 @@ package seedu.address.model;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import javafx.collections.transformation.FilteredList;
@@ -30,6 +31,10 @@ public class ModelManager extends ComponentManager implements Model {
 
     private final TaskList taskList;
     private final FilteredList<ReadOnlyTask> filteredTasks;
+    private static Stack<TaskList> statusStack;
+    private static Stack<String> commandStack;
+    private static Stack<TaskList> undoneStatus;
+    private static Stack<String> undoneCommand;
 
     /**
      * Initializes a ModelManager with the given taskList and userPrefs.
@@ -42,6 +47,11 @@ public class ModelManager extends ComponentManager implements Model {
 
         this.taskList = new TaskList(taskList);
         filteredTasks = new FilteredList<>(this.taskList.getTaskList());
+        statusStack = new Stack<TaskList>();
+        commandStack = new Stack<String>();
+        undoneStatus = new Stack<TaskList>();
+        undoneCommand = new Stack<String>();
+        pushStatus(taskList);
     }
 
     public ModelManager() {
@@ -92,6 +102,47 @@ public class ModelManager extends ComponentManager implements Model {
         int taskIndex = filteredTasks.getSourceIndex(filteredTaskListIndex);
         taskList.updateTask(taskIndex, editedTask);
         indicateTaskListChanged();
+    }
+
+    @Override
+    public boolean isCommandStackEmpty() {
+        return commandStack.isEmpty();
+    }
+
+    @Override
+    public void pushCommand(String command) {
+        commandStack.push(command);
+    }
+
+    @Override
+    public void pushStatus(ReadOnlyTaskList currentStatus) {
+        TaskList presentStatus = new TaskList(currentStatus);
+        statusStack.push(presentStatus);
+    }
+
+    @Override
+    public void popCurrentStatus() {
+        if (!statusStack.isEmpty()) {
+            TaskList currentStatus = statusStack.pop();
+            undoneStatus.push(currentStatus);
+        }
+    }
+
+    @Override
+    public String getPreviousCommand() {
+        String prevCommand;
+        if (commandStack.isEmpty()) {
+            prevCommand = null;
+        } else {
+            prevCommand = commandStack.pop();
+            undoneCommand.push(prevCommand);
+        }
+        return prevCommand;
+    }
+
+    @Override
+    public TaskList getPrevStatus() {
+        return statusStack.peek();
     }
 
     //=========== Filtered Task List Accessors =============================================================
