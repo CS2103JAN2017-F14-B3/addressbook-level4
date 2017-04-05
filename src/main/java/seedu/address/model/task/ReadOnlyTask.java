@@ -83,12 +83,14 @@ public interface ReadOnlyTask {
 
     default void buildNameString(final StringBuilder builder) {
         builder.append(getName());
+        builder.append("\n");
     }
 
     default void buildDeadlineString(final StringBuilder builder) {
         // TODO don't include milliseconds in toString output
-        builder.append(" Deadline: ");
+        builder.append("Deadline: ");
         builder.append(getDeadline().isPresent() ? getDeadline().get().toString() : "none");
+        builder.append("\n");
     }
 
     default void buildStartEndDateTimeString(final StringBuilder builder) {
@@ -97,21 +99,23 @@ public interface ReadOnlyTask {
             builder.append(" ");
             builder.append(getStartEndDateTime().get().toString());
         } else {
-            builder.append(" Start Date: none ");
+            builder.append("Start Date: none,");
             builder.append(" End Date: none ");
         }
+        builder.append("\n");
     }
 
     default void buildTagsString(final StringBuilder builder) {
-        builder.append(" Tags: ");
+        builder.append("Tags: ");
         getTags().forEach(builder::append);
+        builder.append("\n");
     }
 
     default void buildDoneString(final StringBuilder builder) {
         if (isDone()) {
-            builder.append(" Completed");
+            builder.append("Status: Completed");
         } else {
-            builder.append(" Not Completed");
+            builder.append("Status: Not Completed");
         }
     }
 

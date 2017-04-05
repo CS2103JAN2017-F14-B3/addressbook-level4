@@ -6,6 +6,7 @@ import seedu.address.commons.core.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.task.ReadOnlyTask;
 import seedu.address.model.task.Task;
+import seedu.address.model.task.UniqueTaskList;
 
 //@@author A0135998H
 /**
@@ -22,6 +23,7 @@ public class DoneCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_MARK_TASK_SUCCESS = "Marked Task: %1$s";
+    public static final String MESSAGE_DUPLICATE_TASK = "This task already exists in the task list.";
 
     private final int filteredTaskListIndex;
 
@@ -49,8 +51,14 @@ public class DoneCommand extends Command {
                 taskToEdit.getDeadline(),
                 taskToEdit.getStartEndDateTime(),
                 taskToEdit.getTags());
+        /* switch status of task */
+        editedTask.setDone(!(taskToEdit.isDone()));
 
-        editedTask.markDone();
+        try {
+            model.updateTask(filteredTaskListIndex, editedTask);
+        } catch (UniqueTaskList.DuplicateTaskException dpe) {
+            throw new CommandException(MESSAGE_DUPLICATE_TASK);
+        }
 
         //TODO: switch to done category tab instead
         model.updateFilteredListToShowAll();

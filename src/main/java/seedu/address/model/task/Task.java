@@ -40,6 +40,7 @@ public class Task implements ReadOnlyTask {
      */
     public Task(ReadOnlyTask source) {
         this(source.getName(), source.getDeadline(), source.getStartEndDateTime(), source.getTags());
+        done = source.isDone();
     }
 
     public void setName(Name name) {
@@ -72,8 +73,8 @@ public class Task implements ReadOnlyTask {
         return done;
     }
 
-    public void markDone() {
-        done = !done;
+    public void setDone(boolean status) {
+        done = status;
     }
 
     @Override
@@ -120,7 +121,7 @@ public class Task implements ReadOnlyTask {
         deadline = replacement.getDeadline();
         // Similarly for startEndDateTime we are reusing same Optional
         startEndDateTime = replacement.getStartEndDateTime();
-
+        done = replacement.isDone();
         setTags(replacement.getTags());
     }
 
