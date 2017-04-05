@@ -137,6 +137,16 @@ public class ModelManager extends ComponentManager implements Model {
 
     //@@author A0135998H
     @Override
+    public void updateFilteredListToShowPending() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            System.out.println(!task.isDone());
+            return !(task.isDone());
+        });
+        indicateViewListChanged(ViewCommand.TYPE_PENDING);
+    }
+
+    //@@author A0135998H
+    @Override
     public void updateFilteredListToShowToday() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
             return isToday(task);

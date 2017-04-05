@@ -59,6 +59,9 @@ public class ViewCommand extends Command {
         case TYPE_OVERDUE:
             model.updateFilteredListToShowOverdue();
             return new CommandResult(MESSAGE_SUCCESS_VIEW_OVERDUE_TASKS);
+        case TYPE_PENDING:
+            model.updateFilteredListToShowPending();
+            return new CommandResult(MESSAGE_SUCCESS_VIEW_PENDING_TASKS);
         case TYPE_TODAY:
             model.updateFilteredListToShowToday();
             return new CommandResult(MESSAGE_SUCCESS_VIEW_TODAY_TASKS);

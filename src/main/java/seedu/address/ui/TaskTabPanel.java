@@ -120,6 +120,7 @@ public class TaskTabPanel extends UiPart<Region> {
             break;
         case ViewCommand.TYPE_PENDING :
             getTaskTabPane().getSelectionModel().select(pendingTasksTab);
+            fillTaskListPanel(pendingTasksListPanelPlaceholder);
             break;
         case ViewCommand.TYPE_TODAY :
             getTaskTabPane().getSelectionModel().select(todayTasksTab);
@@ -145,6 +146,8 @@ public class TaskTabPanel extends UiPart<Region> {
                 commandResult = logic.execute(ViewCommand.COMMAND_WORD + " " + ViewCommand.TYPE_FLOATING);
             } else if (currTaskTab.getId().equals(overdueTasksTab.getId())) {
                 commandResult = logic.execute(ViewCommand.COMMAND_WORD + " " + ViewCommand.TYPE_OVERDUE);
+            } else if (currTaskTab.getId().equals(pendingTasksTab.getId())) {
+                commandResult = logic.execute(ViewCommand.COMMAND_WORD + " " + ViewCommand.TYPE_PENDING);
             } else if (currTaskTab.getId().equals(todayTasksTab.getId())) {
                 commandResult = logic.execute(ViewCommand.COMMAND_WORD + " " + ViewCommand.TYPE_TODAY);
             } else {
