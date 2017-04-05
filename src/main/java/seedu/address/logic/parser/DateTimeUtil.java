@@ -16,12 +16,12 @@ import com.joestelmach.natty.Parser;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 
+//@@author A0140023E
 /**
- * Contains utility methods used for parsing strings in the various *Parser classes TODO
+ * Contains utility methods used for handling natural-language date-times using Natty.
  */
 public class DateTimeUtil {
 
-    //@@author A0140023E
     private static Parser dateTimeParser = new Parser(TimeZone.getDefault()); // use the system default timezone
     // TODO decide if this is the right class
     // TODO move the format to formatter class
@@ -68,7 +68,7 @@ public class DateTimeUtil {
      * Parses Date strings into a {@code ZonedDateTime}.
      */
     public static ZonedDateTime parseDateTimeString(String dateTime) throws IllegalValueException {
-        DateGroup dateGroup = parseDateTimeHelper(dateTime);
+        DateGroup dateGroup = parseDateTimeStringHelper(dateTime);
         // the date group returned should contain one and only one date.
         assert dateGroup.getDates() != null && dateGroup.getDates().size() == 1;
 
@@ -81,7 +81,7 @@ public class DateTimeUtil {
     public static ZonedDateTime parseEditedDateTimeString(String dateTime, ZonedDateTime previousDateTime)
             throws IllegalValueException {
 
-        DateGroup dateGroup = parseDateTimeHelper(dateTime);
+        DateGroup dateGroup = parseDateTimeStringHelper(dateTime);
         // the date group returned should contain one and only one date.
         assert dateGroup.getDates() != null && dateGroup.getDates().size() == 1;
 
@@ -91,13 +91,10 @@ public class DateTimeUtil {
 
         Date newDate;
         if (dateTimeType.equals(NATTY_TOKEN_RELATIVE_DATE) || dateTimeType.equals(NATTY_TOKEN_RELATIVE_TIME)) {
-            // such as 24 hours later
-            // such as 2 days later
-            // Relative dates should always be relative to current date not other dates
+            // Relative date should be parsed relative to the current date, which has been parsed previously
             // special cases such as 2 days after 25 Apr also works
             // but cases such as 2 hours after 25 Apr 8pm does not work
-            // Neither does cases such as 2 hours after 25 Apr 8pm work
-            // Relative date should be parsed relative to the current date, which has been parsed previously
+            // Neither does cases such as 2 hours after 25 Apr 8pm
             newDate = date;
         } else {
             newDate = parseDateTimeUsingPrevious(previousDateTime, dateGroup);
@@ -119,8 +116,11 @@ public class DateTimeUtil {
 
         Tree dateTimeSubtree = dateTimeAlternativeRoot.getChild(0);
         assert dateTimeSubtree.getText().equals(NATTY_TOKEN_DATE_TIME)
-        && dateTimeSubtree.getChildCount() == 1;
+        && dateTimeSubtree.getChildCount() >= 1;
 
+        // note that we only return the first child of the date-time subtree because it is enough to determine
+        // the date-type due to the way Natty parses dates. However, this is a brittle approach but there seems
+        // to be no better way to do this.
         Tree dateTimeTypeSubtree = dateTimeSubtree.getChild(0);
         return dateTimeTypeSubtree.getText();
     }
@@ -129,7 +129,7 @@ public class DateTimeUtil {
             throws IllegalValueException {
 
         String extractedDateTime = extractComponentFromDateTime(previousDateGroup);
-        DateGroup newDateGroup = parseDateTimeUsingPreviousHelper(extractedDateTime, previousDateTime);
+        DateGroup newDateGroup = parseDateTimeStringUsingPreviousHelper(extractedDateTime, previousDateTime);
 
         // the date group returned should contain one and only one date.
         assert newDateGroup.getDates() != null && newDateGroup.getDates().size() == 1;
@@ -168,7 +168,7 @@ public class DateTimeUtil {
         // No component to extract if neither date or time is inferred, thus return a null
         return null;
     }
-    private static DateGroup parseDateTimeUsingPreviousHelper(String dateTime,
+    private static DateGroup parseDateTimeStringUsingPreviousHelper(String dateTime,
             ZonedDateTime previousDateTime) throws IllegalValueException {
         // Convert back to old java.util.Date class for use in Natty
         Date previousDateTimeAsOldDateClass = Date.from(previousDateTime.toInstant());
@@ -192,7 +192,7 @@ public class DateTimeUtil {
     /**
      * Returns a DateGroup representing the date-time with extra information about it.
      */
-    private static DateGroup parseDateTimeHelper(String dateTime) throws IllegalValueException {
+    private static DateGroup parseDateTimeStringHelper(String dateTime) throws IllegalValueException {
         final List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
 
         checkForSingleDateGroup(dateGroups, dateTime);
