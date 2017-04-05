@@ -60,8 +60,7 @@ public class DoneCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_TASK);
         }
 
-        //TODO: switch to done category tab instead
-        model.updateFilteredListToShowAll();
+        model.updateFilteredListToShowDone();
         return new CommandResult(String.format(MESSAGE_MARK_TASK_SUCCESS, taskToEdit));
     }
 
