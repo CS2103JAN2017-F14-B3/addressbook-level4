@@ -31,10 +31,12 @@ public class ModelManager extends ComponentManager implements Model {
 
     private final TaskList taskList;
     private final FilteredList<ReadOnlyTask> filteredTasks;
+    //@@author A0148052L
     private Stack<TaskList> statusStack;
     private Stack<String> commandStack;
     private Stack<TaskList> undoneStatus;
     private Stack<String> undoneCommand;
+    //@@author
 
     /**
      * Initializes a ModelManager with the given taskList and userPrefs.
@@ -47,11 +49,13 @@ public class ModelManager extends ComponentManager implements Model {
 
         this.taskList = new TaskList(taskList);
         filteredTasks = new FilteredList<>(this.taskList.getTaskList());
+        //@@author A0148052L
         statusStack = new Stack<TaskList>();
         commandStack = new Stack<String>();
         undoneStatus = new Stack<TaskList>();
         undoneCommand = new Stack<String>();
         pushStatus(taskList);
+        //@@author
     }
 
     public ModelManager() {
