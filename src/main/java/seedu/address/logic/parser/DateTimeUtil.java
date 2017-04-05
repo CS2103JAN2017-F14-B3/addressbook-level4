@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -23,7 +24,11 @@ public class DateTimeUtil {
     //@@author A0140023E
     private static Parser dateTimeParser = new Parser(TimeZone.getDefault()); // use the system default timezone
     // TODO decide if this is the right class
+    // TODO move the format to formatter class
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
+    //public static final DateTimeFormatter DISPLAY_FORMAT_TODO = DateTimeFormatter.ofPattern("yyyy MMM dd hh:mm a");
+    public static final DateTimeFormatter DISPLAY_FORMAT_TODO =
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
     // TODO create format for XmlAdaptedTask only
     // TODO create test format for LogicManagerTest
     public static final ZoneId TIME_ZONE = ZoneId.systemDefault();
