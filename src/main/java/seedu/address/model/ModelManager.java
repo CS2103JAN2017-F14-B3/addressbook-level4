@@ -31,10 +31,10 @@ public class ModelManager extends ComponentManager implements Model {
 
     private final TaskList taskList;
     private final FilteredList<ReadOnlyTask> filteredTasks;
-    private static Stack<TaskList> statusStack;
-    private static Stack<String> commandStack;
-    private static Stack<TaskList> undoneStatus;
-    private static Stack<String> undoneCommand;
+    private Stack<TaskList> statusStack;
+    private Stack<String> commandStack;
+    private Stack<TaskList> undoneStatus;
+    private Stack<String> undoneCommand;
 
     /**
      * Initializes a ModelManager with the given taskList and userPrefs.
