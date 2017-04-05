@@ -177,7 +177,6 @@ public class ParserUtil {
         return Optional.of(startEndDateTime);
     }
 
-
     public static ZonedDateTime parseEditedDateTimeString(String dateTime, ZonedDateTime previousDate)
             throws IllegalValueException {
         // TODO extract commonalities from parseDateTimeString
@@ -200,27 +199,29 @@ public class ParserUtil {
                     // Neither does cases such as 2 hours after 25 Apr 8pm work
                     System.out.println("Relative do nothing!");
                 } else {
-                    // this means there is a bug somewhere as the date and time cannot be both inferred
-                    assert !(group.isDateInferred() && group.isTimeInferred());
-
-                    String extractedDateTest = null;
-                    // TODO using SimpleDateFormat cos old date
                     if (group.isDateInferred()) {
                         System.out.println("Date inferred");
                         // TODO do timezones properly
                         // note Natty does not support SGT so we use offset but this means timezone info
                         // such as daylight saving time adjustments are lost
-                        extractedDateTest = new SimpleDateFormat("HH:mm:ss Z").format(dates.get(0));
+                        String extractedDate = new SimpleDateFormat("HH:mm:ss Z").format(dates.get(0));
+                        //System.out.println(new SimpleDateFormat("HH:mm:ss z").format(dates.get(0)));
+                        //System.out.println(new SimpleDateFormat("HH:mm:ss Z").format(dates.get(0)));
+                        //System.out.println(new SimpleDateFormat("HH:mm:ss zz").format(dates.get(0)));
+                        List<DateGroup> groupsRedone =
+                                dateTimeParser.parse(extractedDate, Date.from(previousDate.toInstant()));
+                        Date newDate = groupsRedone.get(0).getDates().get(0);
+                        return ZonedDateTime.ofInstant(newDate.toInstant(), ZoneId.systemDefault());
                     }
-
                     if (group.isTimeInferred()) {
                         System.out.println("Time inferred");
-                        extractedDateTest = new SimpleDateFormat("yyyy-MM-dd").format(dates.get(0));
+                        // TODO using SimpleDateFormat cos old date
+                        String extractedDate = new SimpleDateFormat("yyyy-MM-dd").format(dates.get(0));
+                        List<DateGroup> groupsRedone =
+                                dateTimeParser.parse(extractedDate, Date.from(previousDate.toInstant()));
+                        Date newDate = groupsRedone.get(0).getDates().get(0);
+                        return ZonedDateTime.ofInstant(newDate.toInstant(), ZoneId.systemDefault());
                     }
-                    List<DateGroup> groupsRedone =
-                            dateTimeParser.parse(extractedDateTest, Date.from(previousDate.toInstant()));
-                    Date newDate = groupsRedone.get(0).getDates().get(0);
-                    return ZonedDateTime.ofInstant(newDate.toInstant(), ParserUtil.TIME_ZONE);
                 }
                 // TODO comment Avoid old Date class where possible format
                 Instant instant = dates.get(0).toInstant();
@@ -236,99 +237,6 @@ public class ParserUtil {
         throw new IllegalValueException(dateTime + " is not a valid date/time.");
     }
 
-    public static ZonedDateTime parseEditedDateTimeStringTest(String dateTime, ZonedDateTime previousDateTime)
-            throws IllegalValueException {
-
-        DateGroup dateGroup = parseDateTimeHelper(dateTime);
-        List<Date> dates = dateGroup.getDates();
-        // 24 hours later what happens
-        System.out.println("Date inferred: " + dateGroup.isDateInferred());
-        System.out.println("Time inferred: " + dateGroup.isTimeInferred());
-        System.out.println("Date type: " + dateGroup.getSyntaxTree().getChild(0).getChild(0));
-        //assert group.getSyntaxTree().getChildCount() == 1;
-        String dateType = dateGroup.getSyntaxTree().getChild(0).getChild(0).getText();
-
-        if (dateType.equals("RELATIVE_DATE") || dateType.equals("RELATIVE_TIME")) {
-            // such as 24 hours later
-            // such as 2 days later
-            // Relative dates should always be relative to current date not other dates
-            // special cases such as 2 days after 25 Apr also works
-            // but cases such as 2 hours after 25 Apr 8pm does not work
-            // Neither does cases such as 2 hours after 25 Apr 8pm work
-            System.out.println("Relative do nothing!");
-        } else {
-            return parseDateTimeUsingPrevious(previousDateTime, dateGroup, dates);
-        }
-        // Convert the old java.util.Date class to the much better new classes in java.time package
-        Instant instant = dates.get(0).toInstant();
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ParserUtil.TIME_ZONE);
-        return zonedDateTime;
-        //throw new IllegalValueException(dateTime + " is not a valid date/time.");
-    }
-
-    private static ZonedDateTime parseDateTimeUsingPrevious(ZonedDateTime previousDateTime, DateGroup dateGroup,
-            List<Date> dates) {
-        String extractedDateTest = extractSpecifiedDateTime(dateGroup, dates);
-        List<DateGroup> groupsRedone =
-                dateTimeParser.parse(extractedDateTest, Date.from(previousDateTime.toInstant()));
-        Date newDate = groupsRedone.get(0).getDates().get(0);
-        return ZonedDateTime.ofInstant(newDate.toInstant(), ParserUtil.TIME_ZONE);
-    }
-
-    private static String extractSpecifiedDateTime(DateGroup dateGroup, List<Date> dates) {
-        // this means there is a bug somewhere as the date and time cannot be both inferred
-        assert !(dateGroup.isDateInferred() && dateGroup.isTimeInferred());
-
-        String extractedDateTest = null;
-        // TODO using SimpleDateFormat cos old date
-        if (dateGroup.isDateInferred()) {
-            System.out.println("Date inferred");
-            // TODO do timezones properly
-            // note Natty does not support SGT so we use offset but this means timezone info
-            // such as daylight saving time adjustments are lost
-            extractedDateTest = new SimpleDateFormat("HH:mm:ss Z").format(dates.get(0));
-        }
-
-        if (dateGroup.isTimeInferred()) {
-            System.out.println("Time inferred");
-            extractedDateTest = new SimpleDateFormat("yyyy-MM-dd").format(dates.get(0));
-        }
-        return extractedDateTest;
-    }
-
-    /**
-     * Returns a DateGroup representing the date-time parsed along with relevant info. TODO
-     */
-    private static DateGroup parseDateTimeHelper(String dateTime) throws IllegalValueException {
-        List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
-        // TODO check if only one group and only one date from list (date alternatives)
-        if (dateGroups.size() == 0) {
-            throw new IllegalValueException(dateTime + " is not a valid date/time.");
-        }
-
-        if (dateGroups.size() > 1) {
-            throw new IllegalValueException(
-                    "Multiple dates found when expecting only one date from " + dateTime);
-        }
-
-        List<Date> datesTest = dateGroups.get(0).getDates();
-
-        // if there is at least one date group, there should be at least one date. This probably
-        // means there is a bug in Natty
-        assert datesTest.size() != 0;
-
-        if (datesTest.size() > 1) {
-            throw new IllegalValueException("Date-time alternatives found, please only enter one date" + dateTime);
-        }
-
-        // returns the date group that represents information about the date
-        return dateGroups.get(0);
-        // Convert the old java.util.Date class to the much better new classes in java.time package
-        //Instant instant = datesTest.get(0).toInstant();
-        //ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ParserUtil.TIME_ZONE);
-        //return zonedDateTime;
-    }
-
     // TODO notice the inconsistencies of the parsing class, maybe need to change this
     /**
      * Parses Date strings into a {@code ZonedDateTime}.
@@ -336,41 +244,21 @@ public class ParserUtil {
     public static ZonedDateTime parseDateTimeString(String dateTime) throws IllegalValueException {
         List<DateGroup> groups = dateTimeParser.parse(dateTime);
         // TODO check if only one group and only one date from list (date alternatives)
-        if (groups.size() == 0) {
-            throw new IllegalValueException(dateTime + " is not a valid date/time.");
-        }
-
-        if (groups.size() > 1) {
-            throw new IllegalValueException(
-                    "Multiple dates found when expecting only one date from " + dateTime);
-        }
-
-        List<Date> datesTest = groups.get(0).getDates();
-
-        // if there is at least one date group, there should be at least one date. This probably
-        // means there is a bug in Natty
-        assert datesTest.size() != 0;
-
-        if (datesTest.size() > 1) {
-            throw new IllegalValueException("Date-time alternatives found, please only enter one date" + dateTime);
-        }
-
-        //for (DateGroup group : groups) {
-        //    List<Date> dates = group.getDates();
-        //    if (dates.size() > 0) {
+        for (DateGroup group : groups) {
+            List<Date> dates = group.getDates();
+            if (dates.size() > 0) {
                 // TODO comment Avoid old Date class where possible format
-        Instant instant = datesTest.get(0).toInstant();
-        ZoneId zoneId = ZoneId.systemDefault();
+                Instant instant = dates.get(0).toInstant();
+                ZoneId zoneId = ZoneId.systemDefault();
 
                 // TODO use a ZonedDateTime so user can see time in his timezone, perhaps
                 // Instant can be used where possible and only when reading input and output from user
                 // we use ZonedDateTime
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId);
-        return zonedDateTime;
-        //    }
-        //}
-        // TODO not expected to reach here
-        //throw new IllegalValueException(dateTime + " is not a valid date/time.");
+                ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId);
+                return zonedDateTime;
+            }
+        }
+        throw new IllegalValueException(dateTime + " is not a valid date/time.");
     }
 
     // DateTimeUtil
