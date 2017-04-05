@@ -231,7 +231,7 @@ public class DateTimeUtil {
         assert dateGroups.size() == 1;
 
         DateGroup dateGroup = dateGroups.get(0);
-        // rejects recurring dates // TODO
+        // rejects recurring dates as they implicitly means it's more than one date
         if (dateGroup.isRecurring()) {
             return false;
         }
