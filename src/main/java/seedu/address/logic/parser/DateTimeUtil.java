@@ -27,6 +27,16 @@ public class DateTimeUtil {
     // TODO move the format to formatter class
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
     //public static final DateTimeFormatter DISPLAY_FORMAT_TODO = DateTimeFormatter.ofPattern("yyyy MMM dd hh:mm a");
+//    public static final DateTimeFormatter DISPLAY_FORMAT_TODO = new DateTimeFormatterBuilder()
+//            .appendPattern("yyyy-MM-dd h")
+//            .optionalStart()
+//            .append(DateTimeFormatter.ofPattern(":"))
+//            //.appendOptional(DateTimeFormatter.ofPattern("[:]"))
+//            .appendFraction(ChronoField.MINUTE_OF_HOUR, 0, 2, false)
+//            //.appendFraction(ChronoField.SECOND_OF_MINUTE, 0, 2, false)
+//            .optionalEnd()
+//            .append(DateTimeFormatter.ofPattern("a"))
+//            .toFormatter();
     public static final DateTimeFormatter DISPLAY_FORMAT_TODO =
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
     // TODO create format for XmlAdaptedTask only
