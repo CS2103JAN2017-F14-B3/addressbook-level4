@@ -104,6 +104,7 @@ public class ModelManager extends ComponentManager implements Model {
         indicateTaskListChanged();
     }
 
+    //@@author A0148052L
     @Override
     public boolean isCommandStackEmpty() {
         return commandStack.isEmpty();
@@ -144,6 +145,7 @@ public class ModelManager extends ComponentManager implements Model {
     public TaskList getPrevStatus() {
         return statusStack.peek();
     }
+   //@@author
 
     //=========== Filtered Task List Accessors =============================================================
 

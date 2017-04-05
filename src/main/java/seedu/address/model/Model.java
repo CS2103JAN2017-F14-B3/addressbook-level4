@@ -33,7 +33,7 @@ public interface Model {
      */
     void updateTask(int filteredTaskListIndex, ReadOnlyTask editedTask)
             throws UniqueTaskList.DuplicateTaskException;
-
+    //@@author A0148052L
     /** Check if commandStack is empty*/
     boolean isCommandStackEmpty();
 
@@ -51,6 +51,7 @@ public interface Model {
 
     /** Returns the latest status*/
     TaskList getPrevStatus();
+    //@@author
 
     /** Returns the filtered task list as an {@code UnmodifiableObservableList<ReadOnlyTask>} */
     UnmodifiableObservableList<ReadOnlyTask> getFilteredTaskList();
