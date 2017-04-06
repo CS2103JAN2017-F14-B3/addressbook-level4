@@ -44,7 +44,6 @@ allprojects {
         checkstyleVersion = '7.1.2'
 
         nattyVersion = '0.13'
-        log4j12Version = '1.7.10'
 
         libDir = 'lib'
     }
@@ -68,7 +67,6 @@ allprojects {
         compile "com.google.guava:guava:$guavaVersion"
 
         compile "com.joestelmach:natty:$nattyVersion"
-        compile "org.slf4j:slf4j-log4j12:$log4j12Version"
 
         testCompile "junit:junit:$junitVersion"
         testCompile "org.testfx:testfx-core:$testFxVersion"
