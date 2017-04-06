@@ -37,7 +37,6 @@ public class DoneCommand extends Command {
     }
 
 
-    //@@author A0140023E
     @Override
     public CommandResult execute() throws CommandException {
         List<ReadOnlyTask> lastShownList = model.getFilteredTaskList();

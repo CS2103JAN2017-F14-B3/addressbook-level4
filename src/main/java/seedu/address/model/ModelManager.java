@@ -84,6 +84,7 @@ public class ModelManager extends ComponentManager implements Model {
         raise(new ViewListChangedEvent(typeOfListView));
     }
 
+    //@@author
     @Override
     public synchronized void deleteTask(ReadOnlyTask target) throws TaskNotFoundException {
         taskList.removeTask(target);
@@ -187,7 +188,6 @@ public class ModelManager extends ComponentManager implements Model {
         filteredTasks.setPredicate(null);
     }
 
-    //@@author A0135998H
     @Override
     public void updateFilteredListToShowDone() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -196,7 +196,6 @@ public class ModelManager extends ComponentManager implements Model {
         indicateViewListChanged(ViewCommand.TYPE_DONE);
     }
 
-    //@@author A0135998H
     @Override
     public void updateFilteredListToShowFloating() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -205,7 +204,6 @@ public class ModelManager extends ComponentManager implements Model {
         indicateViewListChanged(ViewCommand.TYPE_FLOATING);
     }
 
-    //@@author A0135998H
     @Override
     public void updateFilteredListToShowOverdue() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -214,7 +212,6 @@ public class ModelManager extends ComponentManager implements Model {
         indicateViewListChanged(ViewCommand.TYPE_OVERDUE);
     }
 
-    //@@author A0135998H
     @Override
     public void updateFilteredListToShowPending() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -224,7 +221,6 @@ public class ModelManager extends ComponentManager implements Model {
         indicateViewListChanged(ViewCommand.TYPE_PENDING);
     }
 
-    //@@author A0135998H
     @Override
     public void updateFilteredListToShowToday() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -239,6 +235,7 @@ public class ModelManager extends ComponentManager implements Model {
         updateFilteredTaskList(new PredicateExpression(new NameQualifier(keywords)));
     }
 
+    //@@author
     private void updateFilteredTaskList(Expression expression) {
         filteredTasks.setPredicate(expression::satisfies);
     }
@@ -308,12 +305,10 @@ public class ModelManager extends ComponentManager implements Model {
         return false;
     }
 
-    //@@author A0135998H
     public boolean isFloating(ReadOnlyTask task) {
         return !(task.getStartEndDateTime().isPresent()) && !(task.getDeadline().isPresent());
     }
 
-    //@@author A0135998H
     public boolean isToday(ReadOnlyTask task) {
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         if (task.getStartEndDateTime().isPresent()) {
