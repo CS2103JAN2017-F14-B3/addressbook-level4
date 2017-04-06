@@ -111,6 +111,7 @@ public interface ReadOnlyTask {
         builder.append("\n");
     }
 
+    //@@author A0135998H
     default void buildDoneString(final StringBuilder builder) {
         if (isDone()) {
             builder.append("Status: Completed");

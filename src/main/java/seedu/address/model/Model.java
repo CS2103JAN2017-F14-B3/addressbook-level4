@@ -33,6 +33,37 @@ public interface Model {
      */
     void updateTask(int filteredTaskListIndex, ReadOnlyTask editedTask)
             throws UniqueTaskList.DuplicateTaskException;
+    //@@author A0148052L
+    /** Check if commandStack is empty*/
+    boolean isCommandStackEmpty();
+
+    /** Check if undoneCommand stack is empty*/
+    boolean isUndoneCommandEmpty();
+
+    /** Check if undoneStatus stack is empty*/
+    boolean isUndoneStatusEmpty();
+
+    /** Pushes the command to commandStack*/
+    void pushCommand(String command);
+
+    /** Pushes the currentStatus to statusStack*/
+    void pushStatus(ReadOnlyTaskList currentStatus);
+
+    /** Pops the latest undone status from undoneStatus stack and push it to statusStack*/
+    void popUndoneStatus();
+
+    /** Pops the latest undone command from undoneCommand stack and push it to commandStack*/
+    void popUndoneCommand();
+
+    /** Pops the current status from statusStack*/
+    void popCurrentStatus();
+
+    /** Returns the latest command*/
+    String getPreviousCommand();
+
+    /** Returns the latest status*/
+    TaskList getPrevStatus();
+    //@@author
 
     /** Returns the filtered task list as an {@code UnmodifiableObservableList<ReadOnlyTask>} */
     UnmodifiableObservableList<ReadOnlyTask> getFilteredTaskList();
