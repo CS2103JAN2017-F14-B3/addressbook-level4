@@ -187,7 +187,16 @@ public class ModelManager extends ComponentManager implements Model {
         filteredTasks.setPredicate(null);
     }
 
-  //@@author A0135998H
+    //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowDone() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            return task.isDone();
+        });
+        indicateViewListChanged(ViewCommand.TYPE_DONE);
+    }
+
+    //@@author A0135998H
     @Override
     public void updateFilteredListToShowFloating() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -203,6 +212,16 @@ public class ModelManager extends ComponentManager implements Model {
             return isOverdue(task);
         });
         indicateViewListChanged(ViewCommand.TYPE_OVERDUE);
+    }
+
+    //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowPending() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            System.out.println(!task.isDone());
+            return !(task.isDone());
+        });
+        indicateViewListChanged(ViewCommand.TYPE_PENDING);
     }
 
     //@@author A0135998H
