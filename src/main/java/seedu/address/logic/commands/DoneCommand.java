@@ -36,7 +36,6 @@ public class DoneCommand extends Command {
         this.filteredTaskListIndex = filteredTaskListIndex - 1;
     }
 
-    //@@author A0140023E
     @Override
     public CommandResult execute() throws CommandException {
         List<ReadOnlyTask> lastShownList = model.getFilteredTaskList();
