@@ -55,10 +55,6 @@ public class SaveCommand extends Command {
     }
 
     private boolean isFileNameInvalid(String filePath) {
-        if (!filePath.endsWith(".xml") || filePath.endsWith("'\'.xml")) {
-            return true;
-        } else {
-            return false;
-        }
+        return (!filePath.endsWith(".xml") || filePath.endsWith("\\.xml"));
     }
 }
