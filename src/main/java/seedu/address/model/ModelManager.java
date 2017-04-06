@@ -156,6 +156,7 @@ public class ModelManager extends ComponentManager implements Model {
 
     @Override
     public void updateFilteredTaskList(Set<String> keywords) {
+        indicateViewListChanged(ViewCommand.TYPE_ALL);
         updateFilteredTaskList(new PredicateExpression(new NameQualifier(keywords)));
     }
 
