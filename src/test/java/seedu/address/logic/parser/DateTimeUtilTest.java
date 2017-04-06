@@ -5,10 +5,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +21,7 @@ import org.junit.rules.ExpectedException;
 import seedu.address.commons.exceptions.IllegalValueException;
 
 //@@author A0140023E
-// TODO improve test
+// TODO improve test and naming
 public class DateTimeUtilTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -26,12 +30,30 @@ public class DateTimeUtilTest {
     public void parseDateTimeString_validDateTimes_noExceptionThrown() throws IllegalValueException {
         //org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        DateTimeUtil.parseDateTimeString("Sat");
-        DateTimeUtil.parseDateTimeString("Fri");
-        DateTimeUtil.parseDateTimeString("25 Apr");
-        DateTimeUtil.parseDateTimeString("Jan 2017");
-        DateTimeUtil.parseDateTimeString("2 days after");
-        DateTimeUtil.parseDateTimeString("2016-05-02");
+        // Random days of the week
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)),
+                DateTimeUtil.parseDateTimeString("Sat"));
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)),
+                DateTimeUtil.parseDateTimeString("Wed"));
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY)),
+                DateTimeUtil.parseDateTimeString("Fri"));
+
+        // Random date with month
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().withMonth(4).withDayOfMonth(25),
+                DateTimeUtil.parseDateTimeString("25 Apr"));
+
+        // Random month with year, Natty infers that it's 1st day of month
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().withYear(2017).withMonth(1).withDayOfMonth(1),
+                DateTimeUtil.parseDateTimeString("Jan 2017"));
+
+        // Random relative date
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().plusDays(2),
+                DateTimeUtil.parseDateTimeString("2 days after"));
+
+        // Random explicit date
+        assertEqualsIgnoresMilliAndBelow(
+                ZonedDateTime.of(LocalDate.of(2016, 5, 2), LocalTime.now(), DateTimeUtil.TIME_ZONE),
+                DateTimeUtil.parseDateTimeString("2016-05-02"));
     }
 
     @Test
@@ -108,12 +130,12 @@ public class DateTimeUtilTest {
     // TODO all these also
     @Test
     public void testingOnly() throws IllegalValueException {
-        assertFuzzyNotEquals(
+        assertNotEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.now().withMonth(4).withDayOfMonth(25).withHour(20).withMinute(0).withSecond(0)
                         .plusDays(2),
                 DateTimeUtil.parseDateTimeString("2 days after 8pm 25 Apr"));
 
-        assertFuzzyNotEquals(
+        assertNotEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.now().withMonth(4).withDayOfMonth(25).withHour(20).withMinute(0).withSecond(0)
                         .plusHours(2),
                 DateTimeUtil.parseDateTimeString("2 hours after 8pm 25 Apr"));
@@ -122,23 +144,22 @@ public class DateTimeUtilTest {
 
     @Test
     public void parseEditedDateTimeString() throws IllegalValueException {
-        ZonedDateTime previousDateTime = ZonedDateTime.now();
         ZoneId fixedRandomZoneId = ZoneId.of("Asia/Tokyo");
         ZonedDateTime fixedRandomDateTime = ZonedDateTime.of(2015, 4, 1, 3, 4, 5, 2, fixedRandomZoneId);
 
         // relative date
-        assertFuzzyEquals(ZonedDateTime.now().plusDays(2),
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().plusDays(2),
                 DateTimeUtil.parseEditedDateTimeString("2 days later", fixedRandomDateTime));
         // relative time
-        assertFuzzyEquals(ZonedDateTime.now().plusHours(24),
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().plusHours(24),
                 DateTimeUtil.parseEditedDateTimeString("24 hours later", fixedRandomDateTime));
 
         // relative date respective to another date
-        assertFuzzyEquals(ZonedDateTime.now().withMonth(4).withDayOfMonth(25).plusDays(2),
+        assertEqualsIgnoresMilliAndBelow(ZonedDateTime.now().withMonth(4).withDayOfMonth(25).plusDays(2),
                 DateTimeUtil.parseEditedDateTimeString("2 days after 25 Apr", fixedRandomDateTime));
 
         // relative date respective to another date-time
-        assertFuzzyEquals(
+        assertEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.now().withMonth(4).withDayOfMonth(25).withHour(20).withMinute(0).withSecond(0)
                         .plusDays(2),
                 DateTimeUtil.parseEditedDateTimeString("2 days after 25 Apr 8pm", fixedRandomDateTime));
@@ -146,13 +167,13 @@ public class DateTimeUtilTest {
         // relative date respective to another date-time with time-zone
         // PST and America/Los_Angeles is equivalent but Natty supports only certain time-zone suffixes
         // PST is an example of daylights saving time
-        assertFuzzyEquals(
+        assertEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.of(Year.now().getValue(), 4, 25, 20, 0, 0, 0, ZoneId.of("America/Los_Angeles"))
                         .plusDays(5),
                 DateTimeUtil.parseEditedDateTimeString("5 days after 25 Apr 8pm PST", fixedRandomDateTime));
 
         // relative date respective to another date-time with time-zone offset
-        assertFuzzyEquals(
+        assertEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.of(Year.now().getValue(), 4, 25, 20, 0, 0, 0, ZoneId.of("+1000"))
                         .plusDays(3),
                 DateTimeUtil.parseEditedDateTimeString("3 days after 25 Apr 8pm +1000", fixedRandomDateTime));
@@ -160,21 +181,22 @@ public class DateTimeUtilTest {
 
         // relative date respective to another date with time
         // note that this does not work because Natty is not working correctly
-        assertFuzzyNotEquals(
+        assertNotEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.now().withMonth(4).withDayOfMonth(25).withHour(20).withMinute(0).withSecond(0)
                         .plusHours(2),
                 DateTimeUtil.parseEditedDateTimeString("2 hours after 25 Apr 8pm", fixedRandomDateTime));
         // TODO
-        assertFuzzyNotEquals(
+        assertNotEqualsIgnoresMilliAndBelow(
                 ZonedDateTime.of(Year.now().getValue(), 4, 25, 20, 0, 0, 0, ZoneId.of("America/Los_Angeles"))
                         .plusDays(5),
                 DateTimeUtil.parseEditedDateTimeString("5 days after 8pm PST 25 Apr", fixedRandomDateTime));
     }
 
+    // Extract this for use in other tests
     /**
-     * Make a fuzzy match ignoring milliseconds
+     * Asserts that two zoned date-times are equal ignoring milliseconds and below.
      */
-    private void assertFuzzyEquals(ZonedDateTime expected, ZonedDateTime actual) {
+    private void assertEqualsIgnoresMilliAndBelow(ZonedDateTime expected, ZonedDateTime actual) {
         ChronoUnit truncationUnit = ChronoUnit.SECONDS;
         ZonedDateTime expectedTruncated = expected.truncatedTo(truncationUnit);
         ZonedDateTime actualTruncated = actual.truncatedTo(truncationUnit);
@@ -184,9 +206,10 @@ public class DateTimeUtilTest {
         assertEquals(expectedTruncated.toInstant(), actualTruncated.toInstant());
     }
 
-    private void assertFuzzyNotEquals(ZonedDateTime expected, ZonedDateTime actual) {
-        // note that we are using isEqual instead of equals as we are just interested in the actual Instant
-        // instead of also making sure for example the zones are equal
+    /**
+     * Asserts that two zoned date-times are not equal ignoring milliseconds and below.
+     */
+    private void assertNotEqualsIgnoresMilliAndBelow(ZonedDateTime expected, ZonedDateTime actual) {
         ChronoUnit truncationUnit = ChronoUnit.SECONDS;
         ZonedDateTime expectedTruncated = expected.truncatedTo(truncationUnit);
         ZonedDateTime actualTruncated = actual.truncatedTo(truncationUnit);

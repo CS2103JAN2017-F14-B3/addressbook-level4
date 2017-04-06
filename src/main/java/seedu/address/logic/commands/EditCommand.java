@@ -88,7 +88,7 @@ public class EditCommand extends Command {
         //@@author A0148052L-reused
         model.pushCommand(COMMAND_WORD);
         model.pushStatus(model.getTaskList());
-        //@@author
+        //@@author A0140023E
         return new CommandResult(String.format(MESSAGE_EDIT_TASK_SUCCESS, taskToEdit));
     }
 
@@ -97,6 +97,8 @@ public class EditCommand extends Command {
      * corresponding field value of the task.
      */
     public static class EditTaskDescriptor {
+        public static final String MESSAGE_NEED_START_END_DATE_TIME = "Must have both start and end date-time";
+
         private Optional<Name> name = Optional.empty();
         private Optional<String> rawDeadline = Optional.empty();
         private Optional<String> rawStartDateTime = Optional.empty();
@@ -165,7 +167,7 @@ public class EditCommand extends Command {
                             ParserUtil.parseNewStartEndDateTime(getRawStartDateTime(), getRawEndDateTime());
                     return;
                 }
-                throw new IllegalValueException("Must have both start and end date-time");
+                throw new IllegalValueException(MESSAGE_NEED_START_END_DATE_TIME);
             }
 
             final StartEndDateTime originalStartEndDateTime = taskToEdit.getStartEndDateTime().get();
