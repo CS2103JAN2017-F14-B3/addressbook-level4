@@ -194,12 +194,10 @@ public class MainWindow extends UiPart<Region> {
         raise(new ExitAppRequestEvent());
     }
 
-    //@author A0135998H
     public TabPane getTaskTabPane() {
         return taskTabPanel.getTaskTabPane();
     }
 
-    //@@author A0135998H
     public TaskListPanel getTaskListPanel() {
         return taskTabPanel.getTaskListPanel();
     }
