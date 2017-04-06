@@ -56,12 +56,11 @@ public class DateTimeUtil {
     public static final String MESSAGE_RECURRING_DATE_TIME_FOUND =
                     "Recurring date/times are not supported. Found from %1$s";
 
-    static {
-        initializeNatty();
-    }
-
-    private static void initializeNatty() {
-        // TODO Auto-generated method stub
+    public static void initializeNatty() {
+        // TODO find a better way to do initialize Natty
+        // Hack: Initialize Natty by parsing a valid date-time string
+        // because some startup time is required for Natty
+        dateTimeParser.parse("tmr");
     }
 
     /**
