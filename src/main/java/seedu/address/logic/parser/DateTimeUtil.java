@@ -48,6 +48,14 @@ public class DateTimeUtil {
     private static final String NATTY_TOKEN_RELATIVE_DATE = "RELATIVE_DATE";
     private static final String NATTY_TOKEN_RELATIVE_TIME = "RELATIVE_TIME";
 
+    public static final String MESSAGE_NOT_VALID_DATE_TIME = "%1$s is not a valid date/time.";
+    public static final String MESSAGE_MULTIPLE_DATE_TIMES_FOUND =
+            "Multiple date/times found when expecting only one date from %1$s";
+    public static final String MESSAGE_MULTIPLE_DATE_TIME_ALTERNATIVES_FOUND =
+            "Date/time alternatives found from %1$s when only one date/time is expected";
+    public static final String MESSAGE_RECURRING_DATE_TIME_FOUND =
+                    "Recurring date/times are not supported. Found from %1$s";
+
     static {
         initializeNatty();
     }
@@ -172,28 +180,20 @@ public class DateTimeUtil {
         // Convert back to old java.util.Date class for use in Natty
         Date previousDateTimeAsOldDateClass = Date.from(previousDateTime.toInstant());
         List<DateGroup> dateGroups = dateTimeParser.parse(dateTime, previousDateTimeAsOldDateClass);
-        // TODO check if only one group and only one date from list (date alternatives)
-        if (dateGroups.size() == 0) {
-            throw new IllegalValueException(dateTime + " is not a valid date/time.");
+
+        checkForSingleDateGroup(dateGroups, dateTime);
+
+        final DateGroup dateGroup = dateGroups.get(0);
+
+        // rejects recurring dates as they implicitly means it's more than one date
+        if (dateGroup.isRecurring()) {
+            throw new IllegalValueException(String.format(MESSAGE_RECURRING_DATE_TIME_FOUND, dateTime));
         }
 
-        if (dateGroups.size() > 1) {
-            throw new IllegalValueException(
-                    "Multiple dates found when expecting only one date from " + dateTime);
-        }
+        checkForSingleDateAlternative(dateGroup, dateTime);
 
-        List<Date> datesTest = dateGroups.get(0).getDates();
-
-        // if there is at least one date group, there should be at least one date. This probably
-        // means there is a bug in Natty
-        assert datesTest.size() != 0;
-
-        if (datesTest.size() > 1) {
-            throw new IllegalValueException("Date-time alternatives found, please only enter one date" + dateTime);
-        }
-
-        // returns the date group that represents information about the date
-        return dateGroups.get(0);
+        // returns the date group that represents the date-time and extra information about it
+        return dateGroup;
     }
 
     /**
@@ -208,8 +208,7 @@ public class DateTimeUtil {
 
         // rejects recurring dates as they implicitly means it's more than one date
         if (dateGroup.isRecurring()) {
-            throw new IllegalValueException(
-                    "Recurring dates are not supported. Found from " + dateTime);
+            throw new IllegalValueException(String.format(MESSAGE_RECURRING_DATE_TIME_FOUND, dateTime));
         }
 
         checkForSingleDateAlternative(dateGroup, dateTime);
@@ -222,12 +221,11 @@ public class DateTimeUtil {
             throws IllegalValueException {
 
         if (dateGroups.size() == 0) {
-            throw new IllegalValueException(dateTime + " is not a valid date/time.");
+            throw new IllegalValueException(String.format(MESSAGE_NOT_VALID_DATE_TIME, dateTime));
         }
 
         if (dateGroups.size() > 1) {
-            throw new IllegalValueException(
-                    "Multiple dates found when expecting only one date from " + dateTime);
+            throw new IllegalValueException(String.format(MESSAGE_MULTIPLE_DATE_TIMES_FOUND, dateTime));
         }
 
         assert dateGroups.size() == 1;
@@ -243,7 +241,8 @@ public class DateTimeUtil {
         assert dateAlternatives.size() >= 1;
 
         if (dateAlternatives.size() > 1) {
-            throw new IllegalValueException("Date-time alternatives found, please only enter one date" + dateTime);
+            throw new IllegalValueException(String.format(MESSAGE_MULTIPLE_DATE_TIME_ALTERNATIVES_FOUND, dateTime));
+
         }
 
         assert dateAlternatives.size() == 1;
