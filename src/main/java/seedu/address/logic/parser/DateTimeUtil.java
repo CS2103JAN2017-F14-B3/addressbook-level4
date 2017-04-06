@@ -197,11 +197,30 @@ public class DateTimeUtil {
     }
 
     /**
-     * Returns a DateGroup representing the date-time parsed along with relevant info. TODO
+     * Returns a DateGroup representing the date-time with extra information about it.
      */
     private static DateGroup parseDateTimeHelper(String dateTime) throws IllegalValueException {
-        List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
-        // TODO check if only one group and only one date from list (date alternatives)
+        final List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
+
+        checkForSingleDateGroup(dateGroups, dateTime);
+
+        final DateGroup dateGroup = dateGroups.get(0);
+
+        // rejects recurring dates as they implicitly means it's more than one date
+        if (dateGroup.isRecurring()) {
+            throw new IllegalValueException(
+                    "Recurring dates are not supported. Found from " + dateTime);
+        }
+
+        checkForSingleDateAlternative(dateGroup, dateTime);
+
+        // returns the date group that represents the date-time and extra information about it
+        return dateGroup;
+    }
+
+    private static void checkForSingleDateGroup(List<DateGroup> dateGroups, String dateTime)
+            throws IllegalValueException {
+
         if (dateGroups.size() == 0) {
             throw new IllegalValueException(dateTime + " is not a valid date/time.");
         }
@@ -212,57 +231,76 @@ public class DateTimeUtil {
         }
 
         assert dateGroups.size() == 1;
+    }
 
-        DateGroup dateGroup = dateGroups.get(0);
-        if (dateGroup.isRecurring()) {
-            throw new IllegalValueException(
-                    "Recurring dates are not supported. Found from " + dateTime);
-        }
+    private static void checkForSingleDateAlternative(DateGroup dateGroup, String dateTime)
+            throws IllegalValueException {
 
-        List<Date> dateAlternatives = dateGroup.getDates();
+        final List<Date> dateAlternatives = dateGroup.getDates();
 
-        // if there is at least one date group, there should be at least one date. This probably
-        // means there is a bug in Natty
-        assert dateAlternatives.size() != 0;
+        // if there is at least one date group, there should always be at least one date.
+        // Therefore, if the assertion fail there might be a bug in Natty.
+        assert dateAlternatives.size() >= 1;
 
         if (dateAlternatives.size() > 1) {
             throw new IllegalValueException("Date-time alternatives found, please only enter one date" + dateTime);
         }
 
-        // returns the date group that represents information about the date
-        return dateGroups.get(0);
+        assert dateAlternatives.size() == 1;
     }
 
     /**
      * Returns true if a String contains only a single date-time string parseable by Natty, otherwise returns false.
      */
     public static boolean isSingleDateTimeString(String dateTime) {
-        List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
-        // Example: "Wed ~ Thur" will result in 2 date groups
-        if (dateGroups.size() == 0 || dateGroups.size() > 1) {
+        final List<DateGroup> dateGroups = dateTimeParser.parse(dateTime);
+
+
+        if (!isSingleDateGroup(dateGroups)) {
             return false;
         }
 
-        assert dateGroups.size() == 1;
-
         DateGroup dateGroup = dateGroups.get(0);
+
         // rejects recurring dates as they implicitly means it's more than one date
         if (dateGroup.isRecurring()) {
             return false;
         }
 
-        List<Date> dateAlternatives = dateGroup.getDates();
+        if (!isSingleDateAlternative(dateGroup)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean isSingleDateGroup(List<DateGroup> dateGroups) {
+        if (dateGroups.size() == 0) {
+            return false;
+        }
+
+        // Example: "Wed ~ Thur" will result in 2 date groups
+        if (dateGroups.size() > 1) {
+            return false;
+        }
+
+        assert dateGroups.size() == 1;
+        return true;
+    }
+
+    private static boolean isSingleDateAlternative(DateGroup dateGroup) {
+        final List<Date> dateAlternatives = dateGroup.getDates();
 
         // if there is at least one date group, there should always be at least one date.
         // Therefore, if the assertion fail there might be a bug in Natty.
-        assert dateAlternatives.size() != 0;
+        assert dateAlternatives.size() >= 1;
 
         // Example: "Wed or Thur" will result in 2 date alternatives
         if (dateAlternatives.size() > 1) {
             return false;
-        } else {
-            assert dateAlternatives.size() == 1; // to check for logical error
-            return true;
         }
+
+        assert dateAlternatives.size() == 1;
+        return true;
     }
 }
