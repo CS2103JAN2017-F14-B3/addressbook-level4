@@ -177,7 +177,6 @@ public class MainApp extends Application {
         }
     }
 
-    //@@author
     @Override
     public void start(Stage primaryStage) {
         logger.info("Starting AddressBook " + MainApp.VERSION);
