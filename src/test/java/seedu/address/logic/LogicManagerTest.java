@@ -38,7 +38,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.SelectCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.logic.parser.ParserUtil;
+import seedu.address.logic.parser.DateTimeUtil;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyTaskList;
@@ -476,16 +476,16 @@ public class LogicManagerTest {
             if (task.getDeadline().isPresent()) {
                 cmd.append(" by ");
                 // TODO change the format
-                cmd.append(task.getDeadline().get().getDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(task.getDeadline().get().getDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
             }
 
             if (task.getStartEndDateTime().isPresent()) {
                 // TODO change the format
                 StartEndDateTime startEndDateTime = task.getStartEndDateTime().get();
                 cmd.append(" from ");
-                cmd.append(startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(startEndDateTime.getStartDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
                 cmd.append(" to ");
-                cmd.append(startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(startEndDateTime.getEndDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
             }
 
             UniqueTagList tags = task.getTags();

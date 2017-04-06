@@ -7,6 +7,7 @@ import java.util.Optional;
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.DateTimeUtil;
 import seedu.address.logic.parser.ParserUtil;
 import seedu.address.model.tag.UniqueTagList;
 import seedu.address.model.task.Deadline;
@@ -212,7 +213,7 @@ public class EditCommand extends Command {
         private void processUsingRawStart(StartEndDateTime originalStartEndDateTime)
                 throws PastDateTimeException, InvalidDurationException, IllegalValueException {
 
-            ZonedDateTime startDateTime = ParserUtil.parseEditedDateTimeString(
+            ZonedDateTime startDateTime = DateTimeUtil.parseEditedDateTimeString(
                     getRawStartDateTime().get(), originalStartEndDateTime.getStartDateTime());
             ZonedDateTime endDateTime = originalStartEndDateTime.getEndDateTime();
             updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
@@ -226,7 +227,7 @@ public class EditCommand extends Command {
                 throws PastDateTimeException, InvalidDurationException, IllegalValueException {
 
             ZonedDateTime startDateTime = originalStartEndDateTime.getStartDateTime();
-            ZonedDateTime endDateTime = ParserUtil.parseEditedDateTimeString(getRawEndDateTime().get(),
+            ZonedDateTime endDateTime = DateTimeUtil.parseEditedDateTimeString(getRawEndDateTime().get(),
                     originalStartEndDateTime.getEndDateTime());
             updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
         }

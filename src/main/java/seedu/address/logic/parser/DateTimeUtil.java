@@ -86,7 +86,7 @@ public class DateTimeUtil {
         assert dateGroup.getDates() != null && dateGroup.getDates().size() == 1;
 
         final Date date = dateGroup.getDates().get(0);
-        // 24 hours later what happens
+
         String dateTimeType = getDateTimeType(dateGroup.getSyntaxTree());
 
         Date newDate;
@@ -102,7 +102,6 @@ public class DateTimeUtil {
         // Convert the old java.util.Date class to the much better new classes in java.time package
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(newDate.toInstant(), DateTimeUtil.TIME_ZONE);
         return zonedDateTime;
-        //throw new IllegalValueException(dateTime + " is not a valid date/time.");
     }
 
     /**
@@ -153,21 +152,21 @@ public class DateTimeUtil {
 
         final boolean hasOnlyTimeSpecified = dateGroup.isDateInferred();
         if (hasOnlyTimeSpecified) {
-            System.out.println("Date inferred");
             // TODO do timezones properly
-            // note Natty does not support SGT so we use offset but this means timezone info
-            // such as daylight saving time adjustments are lost
+            // note Natty does not support some timezones so we use offset but this means timezone info
+            // such as daylight saving time adjustments may be lost
+            // milliseconds are also also ignored as Natty does not parse them
             return new SimpleDateFormat("HH:mm:ss Z").format(date);
         }
 
         final boolean hasOnlyDateSpecified = dateGroup.isTimeInferred();
         if (hasOnlyDateSpecified) {
-            System.out.println("Time inferred");
             return new SimpleDateFormat("yyyy-MM-dd").format(date);
         }
         // No component to extract if neither date or time is inferred, thus return a null
         return null;
     }
+
     private static DateGroup parseDateTimeStringUsingPreviousHelper(String dateTime,
             ZonedDateTime previousDateTime) throws IllegalValueException {
         // Convert back to old java.util.Date class for use in Natty
