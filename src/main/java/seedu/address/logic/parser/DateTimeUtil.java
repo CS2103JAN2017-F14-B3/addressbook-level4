@@ -88,7 +88,6 @@ public class DateTimeUtil {
         final Date date = dateGroup.getDates().get(0);
         // 24 hours later what happens
         String dateTimeType = getDateTimeType(dateGroup.getSyntaxTree());
-        logDateGroupTest(dateGroup);
 
         Date newDate;
         if (dateTimeType.equals(NATTY_TOKEN_RELATIVE_DATE) || dateTimeType.equals(NATTY_TOKEN_RELATIVE_TIME)) {
@@ -98,7 +97,7 @@ public class DateTimeUtil {
             // special cases such as 2 days after 25 Apr also works
             // but cases such as 2 hours after 25 Apr 8pm does not work
             // Neither does cases such as 2 hours after 25 Apr 8pm work
-            System.out.println("Relative date");
+            // Relative date should be parsed relative to the current date, which has been parsed previously
             newDate = date;
         } else {
             newDate = parseDateTimeUsingPrevious(previousDateTime, dateGroup);
@@ -107,12 +106,6 @@ public class DateTimeUtil {
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(newDate.toInstant(), DateTimeUtil.TIME_ZONE);
         return zonedDateTime;
         //throw new IllegalValueException(dateTime + " is not a valid date/time.");
-    }
-
-    private static void logDateGroupTest(DateGroup dateGroup) {
-        System.out.println("Date inferred: " + dateGroup.isDateInferred());
-        System.out.println("Time inferred: " + dateGroup.isTimeInferred());
-        System.out.println("Date type: " + dateGroup.getSyntaxTree().getChild(0).getChild(0));
     }
 
     /**
