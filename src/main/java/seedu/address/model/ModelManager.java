@@ -187,7 +187,16 @@ public class ModelManager extends ComponentManager implements Model {
         filteredTasks.setPredicate(null);
     }
 
-  //@@author A0135998H
+    //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowDone() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            return task.isDone();
+        });
+        indicateViewListChanged(ViewCommand.TYPE_DONE);
+    }
+
+    //@@author A0135998H
     @Override
     public void updateFilteredListToShowFloating() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
@@ -207,6 +216,16 @@ public class ModelManager extends ComponentManager implements Model {
 
     //@@author A0135998H
     @Override
+    public void updateFilteredListToShowPending() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            System.out.println(!task.isDone());
+            return !(task.isDone());
+        });
+        indicateViewListChanged(ViewCommand.TYPE_PENDING);
+    }
+
+    //@@author A0135998H
+    @Override
     public void updateFilteredListToShowToday() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
             return isToday(task);
@@ -216,6 +235,7 @@ public class ModelManager extends ComponentManager implements Model {
 
     @Override
     public void updateFilteredTaskList(Set<String> keywords) {
+        indicateViewListChanged(ViewCommand.TYPE_ALL);
         updateFilteredTaskList(new PredicateExpression(new NameQualifier(keywords)));
     }
 
