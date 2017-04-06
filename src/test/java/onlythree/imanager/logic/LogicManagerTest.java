@@ -24,6 +24,7 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.eventbus.Subscribe;
 
 import onlythree.imanager.commons.core.EventsCenter;
+import onlythree.imanager.commons.core.Messages;
 import onlythree.imanager.commons.events.model.TaskListChangedEvent;
 import onlythree.imanager.commons.events.ui.JumpToListRequestEvent;
 import onlythree.imanager.commons.events.ui.ShowHelpRequestEvent;
@@ -35,6 +36,7 @@ import onlythree.imanager.logic.commands.DeleteCommand;
 import onlythree.imanager.logic.commands.ExitCommand;
 import onlythree.imanager.logic.commands.FindCommand;
 import onlythree.imanager.logic.commands.HelpCommand;
+import onlythree.imanager.logic.commands.SaveCommand;
 import onlythree.imanager.logic.commands.SelectCommand;
 import onlythree.imanager.logic.commands.ViewCommand;
 import onlythree.imanager.logic.commands.exceptions.CommandException;
@@ -51,7 +53,6 @@ import onlythree.imanager.model.task.ReadOnlyTask;
 import onlythree.imanager.model.task.StartEndDateTime;
 import onlythree.imanager.model.task.Task;
 import onlythree.imanager.storage.StorageManager;
-
 
 public class LogicManagerTest {
 
@@ -187,6 +188,21 @@ public class LogicManagerTest {
         assertCommandSuccess("clear", ClearCommand.MESSAGE_SUCCESS, new TaskList(), Collections.emptyList());
     }
 
+    //@@author A0148052L
+    @Test
+    public void execute_save_successful() throws Exception {
+        assertCommandSuccess("save " + "data" + "\\" + "taskList.xml",
+                  SaveCommand.MESSAGE_SUCCESS, new TaskList(), Collections.emptyList());
+    }
+
+    @Test
+    public void execute_save_invalidFilePath() throws Exception {
+        List<ReadOnlyTask> expectedShownList = new ArrayList<>(model.getFilteredTaskList());
+        assertCommandBehavior(false, "save " + "C" + ":" + "\\" + "Users" + "\\" + ".xml",
+                             String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                             SaveCommand.MESSAGE_INVALID_FILE_PATH), new TaskList(), expectedShownList);
+    }
+    //@@author
 
     @Test
     public void execute_add_invalidArgsFormat() {
