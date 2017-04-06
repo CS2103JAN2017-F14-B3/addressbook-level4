@@ -187,11 +187,20 @@ public class ModelManager extends ComponentManager implements Model {
         filteredTasks.setPredicate(null);
     }
 
-  //@@author A0135998H
+    //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowDone() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            return task.isDone();
+        });
+        indicateViewListChanged(ViewCommand.TYPE_DONE);
+    }
+
+    //@@author A0135998H
     @Override
     public void updateFilteredListToShowFloating() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
-            return isFloating(task);
+            return isFloating(task) && !(task.isDone());
         });
         indicateViewListChanged(ViewCommand.TYPE_FLOATING);
     }
@@ -200,16 +209,26 @@ public class ModelManager extends ComponentManager implements Model {
     @Override
     public void updateFilteredListToShowOverdue() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
-            return isOverdue(task);
+            return isOverdue(task) && !(task.isDone());
         });
         indicateViewListChanged(ViewCommand.TYPE_OVERDUE);
     }
 
     //@@author A0135998H
     @Override
+    public void updateFilteredListToShowPending() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            System.out.println(!task.isDone());
+            return !(task.isDone());
+        });
+        indicateViewListChanged(ViewCommand.TYPE_PENDING);
+    }
+
+    //@@author A0135998H
+    @Override
     public void updateFilteredListToShowToday() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
-            return isToday(task);
+            return isToday(task) && !(task.isDone());
         });
         indicateViewListChanged(ViewCommand.TYPE_TODAY);
     }
