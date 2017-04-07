@@ -122,10 +122,10 @@ public abstract class TaskListGuiTest {
      */
     protected void assertResultMessage(String expected) {
         System.out.println("Expected");
-        System.out.println(expected);
+        System.out.println(expected.getBytes());
         System.out.println("Expected End");
         System.out.println("resultDisplay");
-        System.out.println(resultDisplay.getText());
+        System.out.println(resultDisplay.getText().getBytes());
         System.out.println("resultDisplay End");
         System.out.println("Difference begin");
         System.out.println(StringUtils.difference(expected, resultDisplay.getText()));
