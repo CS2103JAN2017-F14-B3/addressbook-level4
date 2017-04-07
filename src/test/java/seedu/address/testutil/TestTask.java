@@ -99,16 +99,17 @@ public class TestTask implements ReadOnlyTask {
     //@@author
     @Override
     public String toString() {
-        return getAsText();
+        return "Rubbish!";
+        //return getAsText();
     }
 
-    @Override
-    public boolean equals(Object other) {
+    //@Override
+    //public boolean equals(Object other) {
         // return true;
-        return other == this // short circuit if same object
-                || (other instanceof ReadOnlyTask // instanceof handles nulls
-                && this.isSameStateAs((ReadOnlyTask) other));
-    }
+    //    return other == this // short circuit if same object
+    //            || (other instanceof ReadOnlyTask // instanceof handles nulls
+    //            && this.isSameStateAs((ReadOnlyTask) other));
+    //}
 
     //@@author A0140023E
     public String getAddCommand() {
