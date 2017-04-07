@@ -24,10 +24,12 @@ public class TestTask implements ReadOnlyTask {
     public TestTask() {
         // Initialize TestTask with empty deadlines, startEndDateTime and tags because they are optional.
         // this will allow us to conveniently create TestTasks through TaskBuilder without being forced
-        // to specify the optional fields
+        // to specify the optional fields. Also set the done boolean to false.
         deadline = Optional.empty();
         startEndDateTime = Optional.empty();
         tags = new UniqueTagList();
+
+        done = false;
     }
 
     /**
@@ -39,6 +41,8 @@ public class TestTask implements ReadOnlyTask {
         deadline = taskToCopy.getDeadline();
         startEndDateTime = taskToCopy.getStartEndDateTime();
         tags = taskToCopy.getTags();
+
+        done = taskToCopy.isDone();
     }
 
     //@@author
