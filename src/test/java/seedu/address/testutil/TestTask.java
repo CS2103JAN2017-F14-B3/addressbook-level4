@@ -102,6 +102,11 @@ public class TestTask implements ReadOnlyTask {
         return getAsText();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return true;
+    }
+
     //@@author A0140023E
     public String getAddCommand() {
         StringBuilder sb = new StringBuilder();
