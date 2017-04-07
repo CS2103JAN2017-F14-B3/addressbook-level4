@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.eventbus.Subscribe;
 
 import onlythree.imanager.commons.core.EventsCenter;
-import onlythree.imanager.commons.core.Messages;
 import onlythree.imanager.commons.events.model.TaskListChangedEvent;
 import onlythree.imanager.commons.events.ui.JumpToListRequestEvent;
 import onlythree.imanager.commons.events.ui.ShowHelpRequestEvent;
@@ -191,15 +191,15 @@ public class LogicManagerTest {
     //@@author A0148052L
     @Test
     public void execute_save_successful() throws Exception {
-        assertCommandSuccess("save " + "data" + "\\" + "taskList.xml",
+        assertCommandSuccess("save " + saveFolder.getRoot().getPath() + File.separator + "taskList.xml",
                   SaveCommand.MESSAGE_SUCCESS, new TaskList(), Collections.emptyList());
     }
 
     @Test
     public void execute_save_invalidFilePath() throws Exception {
         List<ReadOnlyTask> expectedShownList = new ArrayList<>(model.getFilteredTaskList());
-        assertCommandBehavior(false, "save " + "C" + ":" + "\\" + "Users" + "\\" + ".xml",
-                             String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+        assertCommandBehavior(false, "save " + "/.xml",
+                             String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                              SaveCommand.MESSAGE_INVALID_FILE_PATH), new TaskList(), expectedShownList);
     }
     //@@author
