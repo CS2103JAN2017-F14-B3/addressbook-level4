@@ -85,7 +85,7 @@ public interface ReadOnlyTask {
 
     default void buildNameString(final StringBuilder builder) {
         builder.append(getName());
-        builder.append("\n");
+        builder.append(System.lineSeparator());
     }
 
     default void buildDeadlineString(final StringBuilder builder) {
