@@ -58,7 +58,9 @@ public interface ReadOnlyTask {
 
         return Objects.equals(getName(), other.getName())
                 && Objects.equals(getDeadline(), other.getDeadline())
-                && Objects.equals(getStartEndDateTime(), other.getStartEndDateTime());
+                && Objects.equals(getStartEndDateTime(), other.getStartEndDateTime())
+                && isDone() == other.isDone();
+
         // TODO tags should actually be checked because that's how equals should usually function
         // However, the equals here is used to check for duplicates and is not really consistent
         // with how equals behave. Thus to further investigate.
