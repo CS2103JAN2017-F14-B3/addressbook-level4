@@ -137,7 +137,7 @@ public abstract class TaskListGuiTest {
         System.out.println(StringUtils.difference(expected, resultDisplay.getText()));
         System.out.println("Distance: " + StringUtils.getLevenshteinDistance(expected, resultDisplay.getText()));
         System.out.println("Difference end");
-        assertEquals(expected, resultDisplay.getText());
+        assertEquals(expected.replaceAll("\\s+", ""), resultDisplay.getText().replaceAll("\\s+", ""));
     }
 
     public void raise(BaseEvent e) {
