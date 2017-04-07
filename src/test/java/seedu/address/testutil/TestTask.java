@@ -99,8 +99,8 @@ public class TestTask implements ReadOnlyTask {
     //@@author
     @Override
     public String toString() {
-        return "Rubbish!";
-        //return getAsText();
+    //    return "Rubbish!";
+        return getAsText();
     }
 
     //@Override
