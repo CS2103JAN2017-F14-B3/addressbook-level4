@@ -13,6 +13,9 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.testfx.api.FxToolkit;
 
+import com.google.common.base.Charsets;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 import guitests.guihandles.CommandBoxHandle;
 import guitests.guihandles.MainGuiHandle;
 import guitests.guihandles.MainMenuHandle;
@@ -122,10 +125,10 @@ public abstract class TaskListGuiTest {
      */
     protected void assertResultMessage(String expected) {
         System.out.println("Expected");
-        System.out.println(expected.getBytes());
+        System.out.println(Arrays.toString(expected.getBytes(Charsets.UTF_8)));
         System.out.println("Expected End");
         System.out.println("resultDisplay");
-        System.out.println(resultDisplay.getText().getBytes());
+        System.out.println(Arrays.toString(resultDisplay.getText().getBytes(Charsets.UTF_8)));
         System.out.println("resultDisplay End");
         System.out.println("Difference begin");
         System.out.println(StringUtils.difference(expected, resultDisplay.getText()));
