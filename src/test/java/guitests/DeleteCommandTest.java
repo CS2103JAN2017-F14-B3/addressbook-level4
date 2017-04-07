@@ -3,6 +3,9 @@ package guitests;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.DeleteCommand.MESSAGE_DELETE_TASK_SUCCESS;
 
+import java.math.BigInteger;
+
+import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import seedu.address.testutil.TestTask;
@@ -52,6 +55,20 @@ public class DeleteCommandTest extends TaskListGuiTest {
 
         //confirm the result message is correct
         assertResultMessage(String.format(MESSAGE_DELETE_TASK_SUCCESS, taskToDelete));
+
+        System.out.println("result display: " + resultDisplay.getText());
+        System.out.println("result display: " + stringToHex(resultDisplay.getText()));
+    }
+
+    static String stringToHex(String string) {
+        StringBuilder buf = new StringBuilder(200);
+        for (char ch : string.toCharArray()) {
+            if (buf.length() > 0) {
+                buf.append(' ');
+            }
+            buf.append(String.format("%04x", (int) ch));
+        }
+        return buf.toString();
     }
 
 }
