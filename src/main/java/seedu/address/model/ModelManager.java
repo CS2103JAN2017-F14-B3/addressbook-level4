@@ -84,6 +84,7 @@ public class ModelManager extends ComponentManager implements Model {
         raise(new ViewListChangedEvent(typeOfListView));
     }
 
+    //@@author
     @Override
     public synchronized void deleteTask(ReadOnlyTask target) throws TaskNotFoundException {
         taskList.removeTask(target);
@@ -115,6 +116,16 @@ public class ModelManager extends ComponentManager implements Model {
     }
 
     @Override
+    public boolean isUndoneCommandEmpty() {
+        return undoneCommand.isEmpty();
+    }
+
+    @Override
+    public boolean isUndoneStatusEmpty() {
+        return undoneStatus.isEmpty();
+    }
+
+    @Override
     public void pushCommand(String command) {
         commandStack.push(command);
     }
@@ -123,6 +134,18 @@ public class ModelManager extends ComponentManager implements Model {
     public void pushStatus(ReadOnlyTaskList currentStatus) {
         TaskList presentStatus = new TaskList(currentStatus);
         statusStack.push(presentStatus);
+    }
+
+    @Override
+    public void popUndoneStatus() {
+        TaskList latestUndoneStatus = undoneStatus.pop();
+        statusStack.push(latestUndoneStatus);
+    }
+
+    @Override
+    public void popUndoneCommand() {
+        String latestUndoneCommand = undoneCommand.pop();
+        commandStack.push(latestUndoneCommand);
     }
 
     @Override
@@ -165,38 +188,54 @@ public class ModelManager extends ComponentManager implements Model {
         filteredTasks.setPredicate(null);
     }
 
-  //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowDone() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            return task.isDone();
+        });
+        indicateViewListChanged(ViewCommand.TYPE_DONE);
+    }
+
     @Override
     public void updateFilteredListToShowFloating() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
-            return isFloating(task);
+            return isFloating(task) && !(task.isDone());
         });
         indicateViewListChanged(ViewCommand.TYPE_FLOATING);
     }
 
-    //@@author A0135998H
     @Override
     public void updateFilteredListToShowOverdue() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
-            return isOverdue(task);
+            return isOverdue(task) && !(task.isDone());
         });
         indicateViewListChanged(ViewCommand.TYPE_OVERDUE);
     }
 
-    //@@author A0135998H
+    @Override
+    public void updateFilteredListToShowPending() {
+        filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
+            System.out.println(!task.isDone());
+            return !(task.isDone());
+        });
+        indicateViewListChanged(ViewCommand.TYPE_PENDING);
+    }
+
     @Override
     public void updateFilteredListToShowToday() {
         filteredTasks.setPredicate((Predicate<? super ReadOnlyTask>) task -> {
-            return isToday(task);
+            return isToday(task) && !(task.isDone());
         });
         indicateViewListChanged(ViewCommand.TYPE_TODAY);
     }
 
     @Override
     public void updateFilteredTaskList(Set<String> keywords) {
+        indicateViewListChanged(ViewCommand.TYPE_ALL);
         updateFilteredTaskList(new PredicateExpression(new NameQualifier(keywords)));
     }
 
+    //@@author
     private void updateFilteredTaskList(Expression expression) {
         filteredTasks.setPredicate(expression::satisfies);
     }
@@ -261,17 +300,15 @@ public class ModelManager extends ComponentManager implements Model {
             return currentDateTime.isAfter(startEndDateTime.getEndDateTime());
         } else if (task.getDeadline().isPresent()) {
             Deadline deadline = task.getDeadline().get();
-            return currentDateTime.isAfter(deadline.getValue());
+            return currentDateTime.isAfter(deadline.getDateTime());
         }
         return false;
     }
 
-    //@@author A0135998H
     public boolean isFloating(ReadOnlyTask task) {
         return !(task.getStartEndDateTime().isPresent()) && !(task.getDeadline().isPresent());
     }
 
-    //@@author A0135998H
     public boolean isToday(ReadOnlyTask task) {
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         if (task.getStartEndDateTime().isPresent()) {
@@ -280,7 +317,7 @@ public class ModelManager extends ComponentManager implements Model {
                     || currentDateTime.isAfter(startEndDateTime.getEndDateTime()));
         } else if (task.getDeadline().isPresent()) {
             Deadline deadline = task.getDeadline().get();
-            return !(currentDateTime.isAfter(deadline.getValue()));
+            return !(currentDateTime.isAfter(deadline.getDateTime()));
         }
         return false;
     }

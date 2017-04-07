@@ -38,7 +38,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.SelectCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.logic.parser.ParserUtil;
+import seedu.address.logic.parser.DateTimeUtil;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyTaskList;
@@ -180,9 +180,9 @@ public class LogicManagerTest {
     @Test
     public void execute_clear() throws Exception {
         TestDataHelper helper = new TestDataHelper();
-        model.addTask(helper.generateTask(1));
-        model.addTask(helper.generateTask(2));
-        model.addTask(helper.generateTask(3));
+        model.addTask(helper.generateTaskWithStartEndDateTime(1));
+        model.addTask(helper.generateTaskWithStartEndDateTime(2));
+        model.addTask(helper.generateTaskWithStartEndDateTime(3));
 
         assertCommandSuccess("clear", ClearCommand.MESSAGE_SUCCESS, new TaskList(), Collections.emptyList());
     }
@@ -430,7 +430,7 @@ public class LogicManagerTest {
         // is truncated to seconds as Natty does not parse milliseconds
         private ZonedDateTime startTestDateTime = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusDays(1);
 
-        Task accept() throws Exception {
+        private Task accept() throws Exception {
             Name name = new Name("Accept Changes");
             StartEndDateTime startEndDateTime =
                     new StartEndDateTime(startTestDateTime.plusDays(2), startTestDateTime.plusDays(4));
@@ -445,16 +445,16 @@ public class LogicManagerTest {
 
         /**
          * Generates a valid task using the given seed.
-         * Running this function with the same parameter values guarantees the returned task will have the same state.
+         * Running this function with the same parameter values guarantees the returned task will have the same state
+         * if it is using the same instance of {@link TestDataHelper}.
          * Each unique seed will generate a unique task object.
          *
          * @param seed used to generate the task data field values
          */
-        Task generateTask(int seed) throws Exception {
-            // note to change
+        private Task generateTaskWithStartEndDateTime(int seed) throws Exception {
             return new Task(
                     new Name("Task" + seed),
-                    Optional.of(new Deadline(startTestDateTime.plusDays(seed))),
+                    Optional.empty(),
                     Optional.of(new StartEndDateTime(startTestDateTime.plusDays(seed + 1),
                             startTestDateTime.plusDays(seed + 2))),
                     new UniqueTagList(new Tag("tag" + Math.abs(seed)), new Tag("tag" + Math.abs(seed + 1)))
@@ -462,7 +462,9 @@ public class LogicManagerTest {
         }
 
         /** Generates the correct add command based on the task given */
-        String generateAddCommand(Task task) {
+        private String generateAddCommand(Task task) {
+            // The date-times are transformed into a format that Natty can parse
+            // TODO use a human format
             StringBuffer cmd = new StringBuffer();
 
             cmd.append("add ");
@@ -472,16 +474,16 @@ public class LogicManagerTest {
             if (task.getDeadline().isPresent()) {
                 cmd.append(" by ");
                 // TODO change the format
-                cmd.append(task.getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(task.getDeadline().get().getDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
             }
 
             if (task.getStartEndDateTime().isPresent()) {
                 // TODO change the format
                 StartEndDateTime startEndDateTime = task.getStartEndDateTime().get();
                 cmd.append(" from ");
-                cmd.append(startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(startEndDateTime.getStartDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
                 cmd.append(" to ");
-                cmd.append(startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+                cmd.append(startEndDateTime.getEndDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
             }
 
             UniqueTagList tags = task.getTags();
@@ -496,7 +498,7 @@ public class LogicManagerTest {
         /**
          * Generates a TaskList with auto-generated tasks.
          */
-        TaskList generateTaskList(int numGenerated) throws Exception {
+        private TaskList generateTaskList(int numGenerated) throws Exception {
             TaskList taskList = new TaskList();
             addToTaskList(taskList, numGenerated);
             return taskList;
@@ -515,14 +517,14 @@ public class LogicManagerTest {
          * Adds auto-generated Task objects to the given TaskList
          * @param taskList The TaskList to which the tasks will be added
          */
-        void addToTaskList(TaskList taskList, int numGenerated) throws Exception {
+        private void addToTaskList(TaskList taskList, int numGenerated) throws Exception {
             addToTaskList(taskList, generateTasks(numGenerated));
         }
 
         /**
          * Adds the given list of Tasks to the given TaskList
          */
-        void addToTaskList(TaskList taskList, List<Task> tasksToAdd) throws Exception {
+        private void addToTaskList(TaskList taskList, List<Task> tasksToAdd) throws Exception {
             for (Task task: tasksToAdd) {
                 taskList.addTask(task);
             }
@@ -532,14 +534,14 @@ public class LogicManagerTest {
          * Adds auto-generated Task objects to the given model
          * @param model The model to which the Tasks will be added
          */
-        void addToModel(Model model, int numGenerated) throws Exception {
+        private void addToModel(Model model, int numGenerated) throws Exception {
             addToModel(model, generateTasks(numGenerated));
         }
 
         /**
          * Adds the given list of Tasks to the given model
          */
-        void addToModel(Model model, List<Task> tasksToAdd) throws Exception {
+        private void addToModel(Model model, List<Task> tasksToAdd) throws Exception {
             for (Task task: tasksToAdd) {
                 model.addTask(task);
             }
@@ -548,10 +550,10 @@ public class LogicManagerTest {
         /**
          * Generates a list of Tasks based on the flags.
          */
-        List<Task> generateTasks(int numGenerated) throws Exception {
+        private List<Task> generateTasks(int numGenerated) throws Exception {
             List<Task> tasks = new ArrayList<>(); // TODO TaskList not a good name for AddressBook replacement
             for (int i = 1; i <= numGenerated; i++) {
-                tasks.add(generateTask(i));
+                tasks.add(generateTaskWithStartEndDateTime(i));
             }
             return tasks;
         }
@@ -564,7 +566,7 @@ public class LogicManagerTest {
         /**
          * Generates a Task object with given name. Other fields will have some dummy values.
          */
-        Task generateTaskWithName(String name) throws Exception {
+        private Task generateTaskWithName(String name) throws Exception {
             // Note that a task is generated with a StartEndDateTime as that would be more complex
             // than a task with Deadline or a Task with no Deadline and StartEndDateTime, thus
             // making test cases more likely to fail

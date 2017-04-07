@@ -7,6 +7,7 @@ import java.util.Optional;
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.DateTimeUtil;
 import seedu.address.logic.parser.ParserUtil;
 import seedu.address.model.tag.UniqueTagList;
 import seedu.address.model.task.Deadline;
@@ -73,10 +74,15 @@ public class EditCommand extends Command {
             throw new CommandException(EditCommand.MESSAGE_NOT_EDITED);
         }
 
-        Task editedTask = new Task(editTaskDescriptor.getUpdatedName(),
-                editTaskDescriptor.getUpdatedDeadline(),
-                editTaskDescriptor.getUpdatedStartEndDateTime(),
-                editTaskDescriptor.getUpdatedTagList());
+        Task editedTask;
+        try {
+            editedTask = new Task(editTaskDescriptor.getUpdatedName(),
+                    editTaskDescriptor.getUpdatedDeadline(),
+                    editTaskDescriptor.getUpdatedStartEndDateTime(),
+                    editTaskDescriptor.getUpdatedTagList());
+        } catch (IllegalValueException e) {
+            throw new CommandException(e.getMessage());
+        }
 
         try {
             model.updateTask(filteredTaskListIndex, editedTask);
@@ -87,7 +93,7 @@ public class EditCommand extends Command {
         //@@author A0148052L-reused
         model.pushCommand(COMMAND_WORD);
         model.pushStatus(model.getTaskList());
-        //@@author
+        //@@author A0140023E
         return new CommandResult(String.format(MESSAGE_EDIT_TASK_SUCCESS, taskToEdit));
     }
 
@@ -96,6 +102,8 @@ public class EditCommand extends Command {
      * corresponding field value of the task.
      */
     public static class EditTaskDescriptor {
+        public static final String MESSAGE_NEED_START_END_DATE_TIME = "Must have both start and end date-time";
+
         private Optional<Name> name = Optional.empty();
         private Optional<String> rawDeadline = Optional.empty();
         private Optional<String> rawStartDateTime = Optional.empty();
@@ -164,7 +172,7 @@ public class EditCommand extends Command {
                             ParserUtil.parseNewStartEndDateTime(getRawStartDateTime(), getRawEndDateTime());
                     return;
                 }
-                throw new IllegalValueException("Must have both start and end date-time");
+                throw new IllegalValueException(MESSAGE_NEED_START_END_DATE_TIME);
             }
 
             final StartEndDateTime originalStartEndDateTime = taskToEdit.getStartEndDateTime().get();
@@ -212,7 +220,7 @@ public class EditCommand extends Command {
         private void processUsingRawStart(StartEndDateTime originalStartEndDateTime)
                 throws PastDateTimeException, InvalidDurationException, IllegalValueException {
 
-            ZonedDateTime startDateTime = ParserUtil.parseEditedDateTimeString(
+            ZonedDateTime startDateTime = DateTimeUtil.parseEditedDateTimeString(
                     getRawStartDateTime().get(), originalStartEndDateTime.getStartDateTime());
             ZonedDateTime endDateTime = originalStartEndDateTime.getEndDateTime();
             updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
@@ -226,7 +234,7 @@ public class EditCommand extends Command {
                 throws PastDateTimeException, InvalidDurationException, IllegalValueException {
 
             ZonedDateTime startDateTime = originalStartEndDateTime.getStartDateTime();
-            ZonedDateTime endDateTime = ParserUtil.parseEditedDateTimeString(getRawEndDateTime().get(),
+            ZonedDateTime endDateTime = DateTimeUtil.parseEditedDateTimeString(getRawEndDateTime().get(),
                     originalStartEndDateTime.getEndDateTime());
             updatedStartEndDateTime = Optional.of(new StartEndDateTime(startDateTime, endDateTime));
         }

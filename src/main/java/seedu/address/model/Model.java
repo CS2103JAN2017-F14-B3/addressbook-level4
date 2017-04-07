@@ -37,11 +37,23 @@ public interface Model {
     /** Check if commandStack is empty*/
     boolean isCommandStackEmpty();
 
+    /** Check if undoneCommand stack is empty*/
+    boolean isUndoneCommandEmpty();
+
+    /** Check if undoneStatus stack is empty*/
+    boolean isUndoneStatusEmpty();
+
     /** Pushes the command to commandStack*/
     void pushCommand(String command);
 
     /** Pushes the currentStatus to statusStack*/
     void pushStatus(ReadOnlyTaskList currentStatus);
+
+    /** Pops the latest undone status from undoneStatus stack and push it to statusStack*/
+    void popUndoneStatus();
+
+    /** Pops the latest undone command from undoneCommand stack and push it to commandStack*/
+    void popUndoneCommand();
 
     /** Pops the current status from statusStack*/
     void popCurrentStatus();
@@ -59,11 +71,17 @@ public interface Model {
     /** Updates the filter of the filtered task list to show all tasks */
     void updateFilteredListToShowAll();
 
+    /** Updates the filter of the filtered task list to show all done tasks */
+    void updateFilteredListToShowDone();
+
     /** Updates the filter of the filtered task list to show all floating tasks */
     void updateFilteredListToShowFloating();
 
     /** Updates the filter of the filtered task list to show all overdue tasks */
     void updateFilteredListToShowOverdue();
+
+    /** Updates the filter of the filtered task list to show all pending tasks */
+    void updateFilteredListToShowPending();
 
     /** Updates the filter of the filtered task list to show all today tasks */
     void updateFilteredListToShowToday();

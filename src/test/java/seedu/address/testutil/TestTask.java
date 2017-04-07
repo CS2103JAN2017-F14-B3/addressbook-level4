@@ -2,7 +2,7 @@ package seedu.address.testutil;
 
 import java.util.Optional;
 
-import seedu.address.logic.parser.ParserUtil;
+import seedu.address.logic.parser.DateTimeUtil;
 import seedu.address.model.tag.UniqueTagList;
 import seedu.address.model.task.Deadline;
 import seedu.address.model.task.Name;
@@ -18,6 +18,7 @@ public class TestTask implements ReadOnlyTask {
     private Optional<Deadline> deadline;
     private Optional<StartEndDateTime> startEndDateTime;
     private UniqueTagList tags;
+    private boolean done;
 
     //@@author A0140023E
     public TestTask() {
@@ -59,6 +60,11 @@ public class TestTask implements ReadOnlyTask {
         this.tags = tags;
     }
 
+    //@@author A0135998H
+    public void markDone() {
+        this.done = !done;
+    }
+
     @Override
     public Name getName() {
         return name;
@@ -81,6 +87,12 @@ public class TestTask implements ReadOnlyTask {
         return tags;
     }
 
+    //@@author A0135998H
+    public boolean isDone() {
+        return done;
+    }
+
+    //@@author
     @Override
     public String toString() {
         return getAsText();
@@ -94,16 +106,16 @@ public class TestTask implements ReadOnlyTask {
         if (getDeadline().isPresent()) {
             sb.append(" by ");
             // TODO change the format
-            sb.append(getDeadline().get().getValue().format(ParserUtil.DATE_TIME_FORMAT));
+            sb.append(getDeadline().get().getDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
         }
 
         if (getStartEndDateTime().isPresent()) {
             // TODO change the format
             StartEndDateTime startEndDateTime = getStartEndDateTime().get();
             sb.append(" from ");
-            sb.append(startEndDateTime.getStartDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+            sb.append(startEndDateTime.getStartDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
             sb.append(" to ");
-            sb.append(startEndDateTime.getEndDateTime().format(ParserUtil.DATE_TIME_FORMAT));
+            sb.append(startEndDateTime.getEndDateTime().format(DateTimeUtil.DATE_TIME_FORMAT));
         }
 
         getTags().asObservableList().stream().forEach(s -> sb.append("t/" + s.tagName + " "));
