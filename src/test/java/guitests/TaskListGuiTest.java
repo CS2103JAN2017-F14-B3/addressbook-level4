@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -120,6 +121,7 @@ public abstract class TaskListGuiTest {
      * Asserts the message shown in the Result Display area is same as the given string.
      */
     protected void assertResultMessage(String expected) {
+        StringUtils.difference(expected, resultDisplay.getText());
         assertEquals(expected, resultDisplay.getText());
     }
 
