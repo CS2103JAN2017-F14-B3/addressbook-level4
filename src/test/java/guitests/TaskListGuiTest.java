@@ -121,8 +121,15 @@ public abstract class TaskListGuiTest {
      * Asserts the message shown in the Result Display area is same as the given string.
      */
     protected void assertResultMessage(String expected) {
+        System.out.println("Expected");
+        System.out.println(expected);
+        System.out.println("Expected End");
+        System.out.println("resultDisplay");
+        System.out.println(resultDisplay.getText());
+        System.out.println("resultDisplay End");
         System.out.println("Difference begin");
         System.out.println(StringUtils.difference(expected, resultDisplay.getText()));
+        System.out.println("Difference end");
         assertEquals(expected, resultDisplay.getText());
     }
 
