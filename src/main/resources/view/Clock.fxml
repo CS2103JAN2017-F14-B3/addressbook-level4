@@ -10,7 +10,7 @@
    <children>
       <Label fx:id="clockLabel" alignment="BOTTOM_LEFT" contentDisplay="BOTTOM" text="\$clock" textFill="WHITE">
          <font>
-            <Font name="Arial Rounded MT Bold" size="30.0" />
+            <Font name="Arial Rounded MT Bold" size="26.0" />
          </font>
       </Label>
    </children>
