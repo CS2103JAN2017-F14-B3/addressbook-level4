@@ -45,6 +45,9 @@ public interface Model {
     /** Pushes the currentStatus to statusStack*/
     void pushStatus(ReadOnlyTaskList currentStatus);
 
+    /** Sets the status after undo*/
+    void setStatusAfterUndo(ReadOnlyTaskList statusAfterUndo);
+
     /** Pops the latest undone status from undoneStatus stack and push it to statusStack*/
     void popUndoneStatus();
 
@@ -59,6 +62,9 @@ public interface Model {
 
     /** Returns the latest status*/
     TaskList getPrevStatus();
+
+    /** Returns the status after undo operation*/
+    TaskList getStatusAfterUndo();
     //@@author
 
     /** Returns the filtered task list as an {@code UnmodifiableObservableList<ReadOnlyTask>} */
