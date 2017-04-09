@@ -323,7 +323,6 @@ A: Absolutely! Your data are saved in a file called iManager.xml. Just copy this
 | [edit](#editing-a-task) | `edit INDEX [NAME] [from STARTDATE to ENDDATE] | [by DEADLINE] [t/TAG...]` | Edit a task by index. |
 | [delete](#deleting-a-task) | `delete INDEX` | Delete a task by index. |
 | [view](#viewing-tasks) | `view` | View all tasks. |
-|  | `view` | View all task. |
 |  | `view t` | View all today's task. |
 |  | `view p` | View all pending task. |
 |  | `view d` | View all "done" task. |
