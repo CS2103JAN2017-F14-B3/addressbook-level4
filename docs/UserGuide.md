@@ -1,3 +1,4 @@
+<!---A0135998H-->
 # User Guide
 * [Introduction](#introduction)
 * [Quick Start](#quick-start)
@@ -33,7 +34,7 @@
 * [Command Summary](#command-summary)
 
 ## Introduction
-Todayís hectic world constantly bombards people with innumerable tasks at hand. As a result, people tend to lose track of their work progress and deviate from their priorities. Problems like this are far too common among working adults and students embarking on tightly schedule projects. Thus, our team has created the solution to all your management problems:
+Today‚Äôs hectic world constantly bombards people with innumerable tasks at hand. As a result, people tend to lose track of their work progress and deviate from their priorities. Problems like this are far too common among working adults and students embarking on tightly schedule projects. Thus, our team has created the solution to all your management problems:
 
 Presenting to you,  iManager.
 
@@ -54,7 +55,7 @@ Without further ado, let us get started.
 4. Type the command in the command box and press <kbd>Enter</kbd> to execute it. <br>
    e.g. typing **`help`** and pressing <kbd>Enter</kbd> will open the help window. 
 5. Some example commands you can try:
-   * **`add Sunrise Marathon from 2pm Sat to 6pm Sat`**: Adds a task named ëSunrise Marathoní that take place on Saturday from 2pm to   
+   * **`add Sunrise Marathon from 2pm Sat to 6pm Sat`**: Adds a task named ‚ÄòSunrise Marathon‚Äô that take place on Saturday from 2pm to   
    6pm. 
    * **`view t`**:  view a list for all events happening today.
    * **`delete 1`**:  Delete the first task from the task list.
@@ -68,7 +69,7 @@ iManager at a Glance.
 > <img src="images/overview.png" width="800">
 
 ### Task Tabs
-Tasks are categorised into 6 groups, namely, ìAllî, ìTodayî, ìPendingî, ìDoneî, ìFloatingî and ìOverdueî. Each group is associated with a clickable tab that allows you to navigate between a list of tasks that falls under these groups.
+Tasks are categorised into 6 groups, namely, ‚ÄúAll‚Äù, ‚ÄúToday‚Äù, ‚ÄúPending‚Äù, ‚ÄúDone‚Äù, ‚ÄúFloating‚Äù and ‚ÄúOverdue‚Äù. Each group is associated with a clickable tab that allows you to navigate between a list of tasks that falls under these groups.
 
 > * <img src="images/task_tab.png" width="500">
 > * Floating tasks are tasks that has neither has a duration nor deadline. 
@@ -96,7 +97,7 @@ Format: `[EEEEE][dd MM YYYYY][HH:mm:ss a]`
 
 ### Viewing help
 #### Viewing all commands
-Do you have trouble using iManager? Are you unsure of what to type? Donít worry, simply type help and our help window will pop up to your rescue. <br>
+Do you have trouble using iManager? Are you unsure of what to type? Don‚Äôt worry, simply type help and our help window will pop up to your rescue. <br>
 
 Format: `help`
 > Pressing "f1" will also produce the same effect.
@@ -182,7 +183,7 @@ Examples:
 ### Viewing tasks
 
 #### Viewing all tasks
-Want to get an overview of all the tasks stored in iManager? Simply type view to list all the tasks in the task list. Tasks will be listed undo task category ìAllî. 
+Want to get an overview of all the tasks stored in iManager? Simply type view to list all the tasks in the task list. Tasks will be listed undo task category ‚ÄúAll‚Äù. 
 
 Format: `view `<br>
 
@@ -192,32 +193,32 @@ Start the day by viewing the tasks that needs to be completed today.
 Format: `view t`<br>
 
 #### Viewing all pending tasks
-Still unsure of what to do? Be sure head over to the ìPendingî task tab to view a list of pending tasks.  
+Still unsure of what to do? Be sure head over to the ‚ÄúPending‚Äù task tab to view a list of pending tasks.  
 
 Format: `view p`<br>
 
 #### Viewing all "done" tasks
-Want to feel a sense of satisfaction? Simply head over to the ìDoneî task tab to view a list of completed tasks.  
+Want to feel a sense of satisfaction? Simply head over to the ‚ÄúDone‚Äù task tab to view a list of completed tasks.  
 
 Format: `view d`<br>
 
 #### Viewing all floating tasks
-Finally decided on a deadline or duration for a particular task? No problem! You can assign a deadline or duration to it by navigating to the ìFloatingî task tab to view a list of floating tasks.
+Finally decided on a deadline or duration for a particular task? No problem! You can assign a deadline or duration to it by navigating to the ‚ÄúFloating‚Äù task tab to view a list of floating tasks.
 
 Format: `view f`<br>
 
 #### Viewing all overdue tasks
-Worried about an old task that needs to be addressed? Simply head over to the ìOverdueî task tab to view a list of overdue tasks.  
+Worried about an old task that needs to be addressed? Simply head over to the ‚ÄúOverdue‚Äù task tab to view a list of overdue tasks.  
 
 Format: `view o`<br>
 
 ### Marking a task as "done"
-Completed an assignment that you have spent many hours on? Give yourself a pat on the back by typing done to mark the task as completed. Completed task will be transferred to task category ìDoneî. 
+Completed an assignment that you have spent many hours on? Give yourself a pat on the back by typing done to mark the task as completed. Completed task will be transferred to task category ‚ÄúDone‚Äù. 
 Format: `done INDEX`
 
 > * INDEX of a task correspond to the current listing of tasks shown under the current task tab.
 > * `INDEX` **MUST** be positive integer, e.g. 1, 2 and 3.
-> * Marking a ìdoneî task will reverts the task back to its original status. 
+> * Marking a ‚Äúdone‚Äù task will reverts the task back to its original status. 
 > * Command can be reverted using the [undo](#undo-most-recent-command) command.
 
 Examples: 
@@ -240,7 +241,7 @@ Examples:
    Select the first task in the task list. 
    
 ### Finding for tasks
-Canít seem to remember the details for a particular task? Simply use find command to search for tasks whose name or tags matches the keywords provided.  
+Can‚Äôt seem to remember the details for a particular task? Simply use find command to search for tasks whose name or tags matches the keywords provided.  
 
 Format: `find [KEYWORD...]`
 
@@ -269,7 +270,7 @@ Format: `undo`
 > * Command history will be cleared once iManager exits. 
 
 ### Redo most recent undo
-Wish to change your mind again after performing an undo operation? Are you fickle-minded sometimes? We donít blame you. Simply type redo to recover the changes that you have undone.  
+Wish to change your mind again after performing an undo operation? Are you fickle-minded sometimes? We don‚Äôt blame you. Simply type redo to recover the changes that you have undone.  
 
 Format: `redo`
 
@@ -283,7 +284,7 @@ Afraid of others messing with your work? Be sure to save a copy of your data to 
 Format: `save FILEPATH`
 
 > * FILEPATH must be valid.
-> * By default, data is saved to a file called iManager.xml under the folder called ìdataî. The data folder is automatically created in the same location where you launched iManager.jar. 
+> * By default, data is saved to a file called iManager.xml under the folder called ‚Äúdata‚Äù. The data folder is automatically created in the same location where you launched iManager.jar. 
 > * Changes made to iManager are automatically saved. There is NO NEED to save them manually. 
 
 Examples:
@@ -303,7 +304,7 @@ Q: Can I undo my previous commands after reopening iManager? <br>
 A: Unfortunately, like most task managers out there, iManager does not save your previous commands upon exiting.
 
 Q: What do I do when iManager crashes? <br>
-A: There are many reasons why iManager may just stop working or ìfreeze.î Most of the time, the problem can be resolve by simply restarting the application. 
+A: There are many reasons why iManager may just stop working or ‚Äúfreeze.‚Äù Most of the time, the problem can be resolve by simply restarting the application. 
 
 Q: Does iManager save my tasks after closing the application? <br>
 A: Yes. iManager saves your data every time a command is successfully executed, putting users at ease. 
