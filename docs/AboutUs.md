@@ -3,9 +3,9 @@
 * Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0135998H.md)]
 [[test](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0135998H.md)]
 * Other Major Contributions:
- * Reskin UI design 
+ * Reskin UI design
  * Wrote User Guide
- 
+
 -----
 
 #### [Tan Li Hao](https://github.com/LiHaoTan)
@@ -13,9 +13,9 @@
 Year 2 Computer Science Major<br>
 **Role**: Developer <br>
 **Responsibilities**: Testing, Integration <br>
-* Components in charge of: Logic 
+* Components in charge of: Logic
 * Features implemented:
-* Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0140023E.md)] 
+* Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0140023E.md)]
 [[test](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0140023E.md)]
 * Other Major Contributions:
 
