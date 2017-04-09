@@ -40,46 +40,46 @@ Presenting to you,  iManager.
 
 iManager is your one-stop application that helps you manage all your tasks at one go. With its interactive UI, managing tasks has never been easier. Our product incorporate niche features such as Flexi Commands and tab reference which saves you time and energy, managing tasks that would otherwise require the use of multiple applications.
 
-Without further ado, let us get started. 
+Without further ado, let us get started.
 
 ## Quick Start
 0. Ensure you have Java version `1.8.0_60` or later installed in your Computer.<br>
    > Having any Java 8 version is not enough. <br>
    This app will not work with earlier versions of Java 8.
-   
+
 1. Download the latest `iManager.jar` from the [releases](../../../releases) tab.
 2. Copy the file to the folder you want to use as the home folder for your iManager application.
 3. Double-click the file to start the app. The GUI should appear in a few seconds.
    > <img src="images/empty.png" width="800">
 
 4. Type the command in the command box and press <kbd>Enter</kbd> to execute it. <br>
-   e.g. typing **`help`** and pressing <kbd>Enter</kbd> will open the help window. 
+   e.g. typing **`help`** and pressing <kbd>Enter</kbd> will open the help window.
 5. Some example commands you can try:
-   * **`add Sunrise Marathon from 2pm Sat to 6pm Sat`**: Adds a task named ‘Sunrise Marathon’ that take place on Saturday from 2pm to   
-   6pm. 
+   * **`add Sunrise Marathon from 2pm Sat to 6pm Sat`**: Adds a task named ‘Sunrise Marathon’ that take place on Saturday from 2pm to
+   6pm.
    * **`view t`**:  view a list for all events happening today.
    * **`delete 1`**:  Delete the first task from the task list.
    * **`exit`**: exits the application.
-6. Refer to the [Commands](#commands) section below for details of each command.    
+6. Refer to the [Commands](#commands) section below for details of each command.
 
 ## Features
 
 #### Overview
-iManager at a Glance. 
+iManager at a Glance.
 > <img src="images/overview.png" width="800">
 
 ### Task Tabs
 Tasks are categorised into 6 groups, namely, “All”, “Today”, “Pending”, “Done”, “Floating” and “Overdue”. Each group is associated with a clickable tab that allows you to navigate between a list of tasks that falls under these groups.
 
 > * <img src="images/task_tab.png" width="500">
-> * Floating tasks are tasks that has neither has a duration nor deadline. 
+> * Floating tasks are tasks that has neither has a duration nor deadline.
 > * Alternatively, you can use the [view](#viewing-tasks) to perform the same navigation using your keyboard.
 
 ## Commands
 ### Command Format
-> * Words in `UPPER_CASE` are command arguments, e.g. NAME, INDEX and STARTDATE. 
-> * Words in `lower_case` are command and connectors, e.g. add and by. 
-> * Letters with slash are command identifiers, e.g. t/.  
+> * Words in `UPPER_CASE` are command arguments, e.g. NAME, INDEX and STARTDATE.
+> * Words in `lower_case` are command and connectors, e.g. add and by.
+> * Letters with slash are command identifiers, e.g. t/.
 > * Items in `SQUARE_BRACKETS` are optional.
 > * Items with `...` behind can have multiple instances.
 > * `|` means "or".
@@ -93,7 +93,7 @@ Format: `[EEEEE][dd MM YYYYY][HH:mm:ss a]`
 > * `[YYYYY]`: Period of 12 months. (e.g. 1999, 2016, 2020.)
 > * `[HH:mm:ss aTIME]`: 12-hours-clock. Case insensitive. (e.g. 12am, 1:30am, 3:45AM.)
 > * The order of the date and time does not matter when typing a command.
-> * Missing field will be replace by CURRENT DATE AND TIME. 
+> * Missing field will be replace by CURRENT DATE AND TIME.
 
 ### Viewing help
 #### Viewing all commands
@@ -103,10 +103,10 @@ Format: `help`
 > Pressing "f1" will also produce the same effect.
 > Entering the wrong command will flashed the correct usage of the command in the result display.
 
-Examples: 
+Examples:
 * `help` <br>
   Shows all available commands with examples.
-  
+
 ### Adding a task
 Work can be stressful and overwhelming. We are being bombarded with information at home, in school and at work. It is natural to forget things from time to time and panic whenever the submission date is near. That being said, it is important for us to learn how to organize and manage the tasks at hand. However in iManager, things are made easier for you. <br>
 
@@ -120,32 +120,32 @@ Format: `add NAME from STARTDATE to ENDDATE  [t/TAG...]`
 > * <img src="images/task_duration.png" width="500">
 > * Tasks can have any number of tags.
 
-Examples: 
+Examples:
 * `add MA1506 from 26 Apr 2017 12pm to 26 Apr 2017 3pm t/killer t/revision` <br>
    Adding a MA1406 task with duration to iManager.
 
-#### Adding a task with deadline 
+#### Adding a task with deadline
 Hey! But what if my task do not have a start date? No worries, you can always add tasks with deadlines. <br>
 
-Format: `add NAME by DEADLINE  [t/TAG...]` 
+Format: `add NAME by DEADLINE  [t/TAG...]`
 
 > * <img src="images/task_deadline.png" width="500">
 > * Task can have any number of tags.
 
 Examples:
-* `add EE2021 by 26 Apr 2017 12PM  t/homework` <br> 
+* `add EE2021 by 26 Apr 2017 12PM  t/homework` <br>
    Adding a EE2021 task with deadline to iManager.
-  
+
 #### Adding a floating task
 Not bad! What if I do not have any information regarding a task? As mentioned previously, tasks with neither a deadline nor duration are classified as floating tasks. iManager also allows you to add  floating tasks. <br>
 
-Format: `add NAME [t/TAG...]` 
+Format: `add NAME [t/TAG...]`
 
 > * <img src="images/task_floating.png" width="500">
 > * Task can have any number of tags.
 
 Examples:
-* `add CS2103 Project t/help` <br> 
+* `add CS2103 Project t/help` <br>
    Adding a CS2103 project task that has neither a deadline nor duration to iManager.
 
 ### Editing a task
@@ -157,14 +157,14 @@ Format: `edit INDEX [NAME] [from STARTDATE to ENDDATE] | [by DEADLINE] [t/TAG...
 > * INDEX of a task correspond to the current listing of tasks shown under the current task tab.
 > * `INDEX` **MUST** be positive integer, e.g. 1, 2 and 3.
 > * Editing a tag would ` overwites existing tags of a task.
-> * Task cannot have both deadline and duration. 
+> * Task cannot have both deadline and duration.
 
 Examples:
 * `edit 1 from 3pm to 5pm t/postpone`<br>
    Editing the first task in the task list.
 * `edit 1 Updated Event by 12pm  t/homework`<br>
 * `add 1 Updated Event from 12pm to 3pm t/important`<br>
-   
+
 
 ### Deleting a task
 
@@ -176,14 +176,14 @@ Format: `delete INDEX`
 > * `INDEX` **MUST** be positive integer, e.g. 1, 2 and 3.
 > * Deleted task can be restored using the [undo](#undo-most-recent-command) command.
 
-Examples: 
+Examples:
 * `delete 2`<br>
-   Delete the second task in the task list. 
+   Delete the second task in the task list.
 
 ### Viewing tasks
 
 #### Viewing all tasks
-Want to get an overview of all the tasks stored in iManager? Simply type view to list all the tasks in the task list. Tasks will be listed undo task category “All”. 
+Want to get an overview of all the tasks stored in iManager? Simply type view to list all the tasks in the task list. Tasks will be listed undo task category “All”.
 
 Format: `view `<br>
 
@@ -193,12 +193,12 @@ Start the day by viewing the tasks that needs to be completed today.
 Format: `view t`<br>
 
 #### Viewing all pending tasks
-Still unsure of what to do? Be sure head over to the “Pending” task tab to view a list of pending tasks.  
+Still unsure of what to do? Be sure head over to the “Pending” task tab to view a list of pending tasks.
 
 Format: `view p`<br>
 
 #### Viewing all "done" tasks
-Want to feel a sense of satisfaction? Simply head over to the “Done” task tab to view a list of completed tasks.  
+Want to feel a sense of satisfaction? Simply head over to the “Done” task tab to view a list of completed tasks.
 
 Format: `view d`<br>
 
@@ -208,25 +208,25 @@ Finally decided on a deadline or duration for a particular task? No problem! You
 Format: `view f`<br>
 
 #### Viewing all overdue tasks
-Worried about an old task that needs to be addressed? Simply head over to the “Overdue” task tab to view a list of overdue tasks.  
+Worried about an old task that needs to be addressed? Simply head over to the “Overdue” task tab to view a list of overdue tasks.
 
 Format: `view o`<br>
 
 ### Marking a task as "done"
-Completed an assignment that you have spent many hours on? Give yourself a pat on the back by typing done to mark the task as completed. Completed task will be transferred to task category “Done”. 
+Completed an assignment that you have spent many hours on? Give yourself a pat on the back by typing done to mark the task as completed. Completed task will be transferred to task category “Done”.
 Format: `done INDEX`
 
 > * INDEX of a task correspond to the current listing of tasks shown under the current task tab.
 > * `INDEX` **MUST** be positive integer, e.g. 1, 2 and 3.
-> * Marking a “done” task will reverts the task back to its original status. 
+> * Marking a “done” task will reverts the task back to its original status.
 > * Command can be reverted using the [undo](#undo-most-recent-command) command.
 
-Examples: 
+Examples:
 * `done 1`<br>
    Mark the first task in the task list as "done".
 * `done exam`<br>
    Mark a task named "exam" in the task list as "done".
-   
+
 ### Selecting a task
 Lazy to scroll through an entire list of tasks just to look for one particular task? No problem! Simply type select and jump straight to your selection.
 
@@ -236,25 +236,25 @@ Format: `select INDEX`
 > * INDEX of a task correspond to the current listing of tasks shown under the current task tab.
 > * `INDEX` **MUST** be positive integer, e.g. 1, 2 and 3.
 
-Examples: 
+Examples:
 * `select 1`<br>
-   Select the first task in the task list. 
-   
+   Select the first task in the task list.
+
 ### Finding for tasks
-Can’t seem to remember the details for a particular task? Simply use find command to search for tasks whose name or tags matches the keywords provided.  
+Can’t seem to remember the details for a particular task? Simply use find command to search for tasks whose name or tags matches the keywords provided.
 
 Format: `find [KEYWORD...]`
 
-> * Keywords are case insensitive. 
-> * The order of the keywords does not matter. 
-> * A task is matched so long as its name or tags matches a keyword. 
+> * Keywords are case insensitive.
+> * The order of the keywords does not matter.
+> * A task is matched so long as its name or tags matches a keyword.
 
-Examples: 
+Examples:
 * `find exam SR1`<br>
    Find all tasks whose name or tags matchs "exam" or "SR1".
-   
+
 ### Clearing all tasks
-Wish to start afresh? Wish granted! Simply type clear and embark on a new journey with iManager. 
+Wish to start afresh? Wish granted! Simply type clear and embark on a new journey with iManager.
 
 Format: `clear`
 
@@ -265,27 +265,27 @@ Accidentally executed the wrong command? Do not fret! Simply type undo to remove
 
 Format: `undo`
 
-> * `undo` **ONLY** support add, edit, delete, done, clear and redo command. 
-> * Only redo commands that modify iManager in the same session.  
-> * Command history will be cleared once iManager exits. 
+> * `undo` **ONLY** support add, edit, delete, done, clear and redo command.
+> * Only redo commands that modify iManager in the same session.
+> * Command history will be cleared once iManager exits.
 
 ### Redo most recent undo
-Wish to change your mind again after performing an undo operation? Are you fickle-minded sometimes? We don’t blame you. Simply type redo to recover the changes that you have undone.  
+Wish to change your mind again after performing an undo operation? Are you fickle-minded sometimes? We don’t blame you. Simply type redo to recover the changes that you have undone.
 
 Format: `redo`
 
-> * `redo` **ONLY** support add, edit, delete, done, clear and undo command. 
-> * Only redo commands that modify iManager in the same session.  
-> * Command history will be cleared once iManager exits. 
+> * `redo` **ONLY** support add, edit, delete, done, clear and undo command.
+> * Only redo commands that modify iManager in the same session.
+> * Command history will be cleared once iManager exits.
 
 ### Save
-Afraid of others messing with your work? Be sure to save a copy of your data to a secure location that no one knows except for you! 
+Afraid of others messing with your work? Be sure to save a copy of your data to a secure location that no one knows except for you!
 
 Format: `save FILEPATH`
 
 > * FILEPATH must be valid.
-> * By default, data is saved to a file called iManager.xml under the folder called “data”. The data folder is automatically created in the same location where you launched iManager.jar. 
-> * Changes made to iManager are automatically saved. There is NO NEED to save them manually. 
+> * By default, data is saved to a file called iManager.xml under the folder called “data”. The data folder is automatically created in the same location where you launched iManager.jar.
+> * Changes made to iManager are automatically saved. There is NO NEED to save them manually.
 
 Examples:
 * `saveto C:\Users\Computing\Desktop\CS2103`
@@ -298,16 +298,16 @@ Format : `exit`
 ## FAQ
 
 Q: Does iManager support Windows 10. <br>
-A: Absolutely! iManager works with devices running on Windows 7 or later. 
+A: Absolutely! iManager works with devices running on Windows 7 or later.
 
 Q: Can I undo my previous commands after reopening iManager? <br>
 A: Unfortunately, like most task managers out there, iManager does not save your previous commands upon exiting.
 
 Q: What do I do when iManager crashes? <br>
-A: There are many reasons why iManager may just stop working or “freeze.” Most of the time, the problem can be resolve by simply restarting the application. 
+A: There are many reasons why iManager may just stop working or “freeze.” Most of the time, the problem can be resolve by simply restarting the application.
 
 Q: Does iManager save my tasks after closing the application? <br>
-A: Yes. iManager saves your data every time a command is successfully executed, putting users at ease. 
+A: Yes. iManager saves your data every time a command is successfully executed, putting users at ease.
 
 Q: Can I transfer my data to another computer? <br>
 A: Absolutely! Your data are saved in a file called iManager.xml. Just copy this file to the other computer and place in under data\iManager.xml. Ensure you have iManager installed on both computers.
