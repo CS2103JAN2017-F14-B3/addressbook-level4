@@ -38,8 +38,6 @@ Today’s hectic world constantly bombards people with innumerable tasks at hand. 
 Presenting to you,  iManager.
 
 iManager is your one-stop application that helps you manage all your tasks at one go. With its interactive UI, managing tasks has never been easier. Our product incorporate niche features such as Flexi Commands and tab reference which saves you time and energy, managing tasks that would otherwise require the use of multiple applications.
-Without further ado, let us get started.  
-
 
 Without further ado, let us get started. 
 
@@ -61,18 +59,18 @@ Without further ado, let us get started.
    * **`view t`**:  view a list for all events happening today.
    * **`delete 1`**:  Delete the first task from the task list.
    * **`exit`**: exits the application.
-6. Refer to the [Features](#features) section below for details of each command.    
+6. Refer to the [Commands](#commands) section below for details of each command.    
 
 ## Features
 
 #### Overview
 iManager at a Glance. 
-> <img src="images/overview.png" width="800">
+> <img src="images/overview.png" width="500">
 
 ### Task Tabs
-Tasks are categorised into 6 groups, namely, “All”, “Today”, “Pending”, “Done”, “Floating” and “Overdue”.Each group is associated with a clickable tab that allows you to navigate between a list of tasks that falls under these groups.
+Tasks are categorised into 6 groups, namely, “All”, “Today”, “Pending”, “Done”, “Floating” and “Overdue”. Each group is associated with a clickable tab that allows you to navigate between a list of tasks that falls under these groups.
 
-> <img src="images/task_tab.png" width="800">
+> * <img src="images/task_tab.png" width="800">
 > * Floating tasks are tasks that has neither has a duration nor deadline. 
 > * Alternatively, you can use the [view](#viewing-tasks) to perform the same navigation using your keyboard.
 
@@ -86,7 +84,7 @@ Tasks are categorised into 6 groups, namely, “All”, “Today”, “Pending”, “Done”, 
 > * `|` means "or".
 
 ### Date and time Format
-Format: `[EEEEE][dd MM YYYYY] [HH:mm:ss a]`
+Format: `[EEEEE][dd MM YYYYY][HH:mm:ss a]`
 > * Applicable to STARTDATE, ENDDATE, DEADLINE.
 > * `[EEEEE]`: Day of the week. Case insensitive. Abbreviation is allowed. (e.g. Mon, Monday, Tue, Tuesday, thur, thursday etc.)
 > * `[dd]`: Day of the Month. (e.g. 1, 11, 31 etc.)
@@ -98,11 +96,11 @@ Format: `[EEEEE][dd MM YYYYY] [HH:mm:ss a]`
 
 ### Viewing help
 #### Viewing all commands
-Do you have trouble using iManager? Are you unsure of what to type? Don’t worry worries, simply type help and our help window will pop up to your rescue. <br>
+Do you have trouble using iManager? Are you unsure of what to type? Don’t worry, simply type help and our help window will pop up to your rescue. <br>
 
 Format: `help`
 > Pressing "f1" will also produce the same effect.
-> Enetering the wrong command will flashed the correct usage of the command in the result display.
+> Entering the wrong command will flashed the correct usage of the command in the result display.
 
 Examples: 
 * `help` <br>
@@ -116,8 +114,9 @@ iManager, offers you flexibility to customized your tasks such that it is easily
 #### Adding a task with duration
 Adds a task with duration to the task list. <br>
 
-Format: `add NAME from STARTDATE to ENDDATE  [t/TAG...]` 
+Format: `add NAME from STARTDATE to ENDDATE  [t/TAG...]`
 
+> <img src="images/task_duration.png" width="500">
 > * Tasks can have any number of tags.
 
 Examples: 
@@ -129,6 +128,7 @@ Hey! But what if my task do not have a start date? No worries, you can always ad
 
 Format: `add NAME by DEADLINE  [t/TAG...]` 
 
+> <img src="images/task_deadline.png" width="500">
 > * Task can have any number of tags.
 
 Examples:
@@ -140,6 +140,7 @@ Not bad! What if I do not have any information regarding a task? As mentioned pr
 
 Format: `add NAME [t/TAG...]` 
 
+ <img src="images/task_floating.png" width="500">
 > * Task can have any number of tags.
 
 Examples:
@@ -320,7 +321,7 @@ A: Absolutely! Your data are saved in a file called iManager.xml. Just copy this
 |  | `add NAME by DEADLINE [t/TAG...]` | Adds a pending task with a deadline to the task list. |
 |  | `add NAME [t/TAG...]` | Adds a floating task to the task list.  |
 | [edit](#editing-a-task) | `edit INDEX [NAME] [from STARTDATE to ENDDATE] | [by DEADLINE] [t/TAG...]` | Edit a task by index. |
-| [del](#deleting-a-task) | `delete INDEX` | Delete a task by index. |
+| [delete](#deleting-a-task) | `delete INDEX` | Delete a task by index. |
 | [view](#viewing-tasks) | `view` | View all tasks. |
 |  | `view` | View all task. |
 |  | `view t` | View all today's task. |
@@ -334,5 +335,5 @@ A: Absolutely! Your data are saved in a file called iManager.xml. Just copy this
 | [clear](#clearing-all-tasks) | `clear` | Clear all tasks. |
 | [undo](#undo-most-recent-command) | `undo` | Undo the most recent command. |
 | [redo](#redo-most-recent-undo) | `redo` | Redo the most recent undo. |
-| [saveto](#save) | `save FILEPATH` | Copy and save the existing data to a designated path. |
+| [save](#save) | `save FILEPATH` | Copy and save the existing data to a designated path. |
 | [exit](#exiting-the-application) | `exit` | Exits the application. |
