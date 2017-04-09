@@ -65,12 +65,12 @@ Without further ado, let us get started.
 
 #### Overview
 iManager at a Glance. 
-> <img src="images/overview.png" width="500">
+> <img src="images/overview.png" width="800">
 
 ### Task Tabs
 Tasks are categorised into 6 groups, namely, “All”, “Today”, “Pending”, “Done”, “Floating” and “Overdue”. Each group is associated with a clickable tab that allows you to navigate between a list of tasks that falls under these groups.
 
-> * <img src="images/task_tab.png" width="800">
+> * <img src="images/task_tab.png" width="500">
 > * Floating tasks are tasks that has neither has a duration nor deadline. 
 > * Alternatively, you can use the [view](#viewing-tasks) to perform the same navigation using your keyboard.
 
@@ -116,7 +116,7 @@ Adds a task with duration to the task list. <br>
 
 Format: `add NAME from STARTDATE to ENDDATE  [t/TAG...]`
 
-> <img src="images/task_duration.png" width="500">
+> * <img src="images/task_duration.png" width="500">
 > * Tasks can have any number of tags.
 
 Examples: 
@@ -128,7 +128,7 @@ Hey! But what if my task do not have a start date? No worries, you can always ad
 
 Format: `add NAME by DEADLINE  [t/TAG...]` 
 
-> <img src="images/task_deadline.png" width="500">
+> * <img src="images/task_deadline.png" width="500">
 > * Task can have any number of tags.
 
 Examples:
@@ -140,7 +140,7 @@ Not bad! What if I do not have any information regarding a task? As mentioned pr
 
 Format: `add NAME [t/TAG...]` 
 
- <img src="images/task_floating.png" width="500">
+> * <img src="images/task_floating.png" width="500">
 > * Task can have any number of tags.
 
 Examples:
