@@ -4,7 +4,7 @@
         <name>CS2103t v0.4</name>
         <deadline>2017-04-11T15:00:00+08:00[Asia/Singapore]</deadline>
         <tag>important</tag>
-        <completed>false</completed>
+        <completed>true</completed>
     </task>
     <task>
         <name>ma1101 Assignment 2</name>
