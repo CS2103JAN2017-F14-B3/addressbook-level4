@@ -28,10 +28,13 @@ Year 2 Computer Science Major<br>
 **Responsibilities**: Testing, Integration <br>
 * Components in charge of: Logic
 * Features implemented:
+  * Add Command
+  * Edit Command
 * Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0140023E.md)]
 [[test](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0140023E.md)]
 * Other Major Contributions:
-
+  * Did the initial refactoring from AddressBook to iManager
+  * Set up CI, Coveralls and Codacy
 -----
 
 #### [Liu Yulin](https://github.com/LiuYulin0629)
@@ -41,6 +44,8 @@ Year 2 Computer Science Major<br>
 **Responsibilities**: Code quality <br>
 * Components in charge of: Model, Storage
 * Features implemented:
+  * Save Command
+  * Undo and Redo Command
 * Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0148052L.md)]
 * Other Major Contributions:
 
