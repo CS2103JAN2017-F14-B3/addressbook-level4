@@ -194,11 +194,10 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void execute_save_invalidFilePath() throws Exception {
+    public void execute_save_invalidFileName() throws Exception {
         List<ReadOnlyTask> expectedShownList = new ArrayList<>(model.getFilteredTaskList());
-        assertCommandBehavior(false, "save " + "/.xml",
-                             String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                             SaveCommand.MESSAGE_INVALID_FILE_PATH), new TaskList(), expectedShownList);
+        assertCommandBehavior(false, "save " + "data" + "\\" + ".xml",
+                             SaveCommand.MESSAGE_INVALID_FILE_NAME, new TaskList(), expectedShownList);
     }
     //@@author
 
