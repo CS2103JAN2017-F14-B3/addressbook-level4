@@ -13,7 +13,7 @@ Year 2 Computer Science Major<br>
   * View Command
   * Done Command
 * Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0135998H.md)]
-[[test](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0135998H.md)]
+[[test code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0135998H.md)]
 * Other Major Contributions:
  * Reskin UI design
  * Wrote User Guide
@@ -31,7 +31,7 @@ Year 2 Computer Science Major<br>
   * Add Command
   * Edit Command
 * Code written: [[functional code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/main/A0140023E.md)]
-[[test](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0140023E.md)]
+[[test code](https://github.com/CS2103JAN2017-F14-B3/main/blob/master/collated/test/A0140023E.md)]
 * Other Major Contributions:
   * Did the initial refactoring from AddressBook to iManager
   * Set up CI, Coveralls and Codacy
